@@ -16,7 +16,7 @@ export interface PublicMenuData {
 export class MenuDataService {
 
   // !!! METTI QUI L'URL DEL TUO SERVER BACKEND !!!
-  private apiUrl = `${environment.apiUrl}/api/public/menu-data`; 
+  private apiUrl = `${environment.apiUrl}/public/menu-data`; 
 
   constructor(private http: HttpClient) {}
 
