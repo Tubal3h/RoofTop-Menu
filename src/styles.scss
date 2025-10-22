@@ -1,1 +1,30 @@
-/* You can add global styles to this file, and also import other style files */
+/* Importa i font di lusso da Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@300;400;600;700&display=swap');
+
+/* Definizione delle variabili di colore per il look 
+  Oro (#D4AF37) e Nero/Grigio scuro (#121212)
+*/
+:root {
+  --font-primary: 'Montserrat', sans-serif;
+  --font-headings: 'Playfair Display', serif;
+  
+  --color-background: #121212; /* Nero profondo */
+  --color-text: #E0E0E0;       /* Bianco non abbagliante */
+  --color-primary: #D4AF37;   /* Oro elegante */
+  --color-border: #333;        /* Bordo discreto */
+}
+
+/* Reset base */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-primary);
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

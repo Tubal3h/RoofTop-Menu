@@ -1,0 +1,285 @@
+
+
+.menu-wrapper {
+  max-width: 600px; /* Ideale per mobile */
+  margin: auto;
+  padding: 1rem;
+  /* Animazione fade-in per quando appare */
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* === Stile Logo === */
+.logo-container {
+  text-align: center;
+  padding: 1.5rem 0 1rem 0;
+}
+
+.logo-image {
+  width: 100%;
+  max-width: 150px; // Adatta la dimensione del tuo logo
+  height: auto;
+}
+
+/* === Stili per il blocco Benvenuto === */
+.welcome-section {
+  margin: 1rem 0 3rem 0;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 2rem;
+}
+
+/* Contenitore per dare la forma all'immagine */
+.image-container {
+  border-radius: 15px 15px 70px 70px; // Arrotonda solo gli angoli inferiori
+  overflow: hidden; // Taglia l'immagine alla forma
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  margin-bottom: 2rem; // Spazio sotto l'immagine
+}
+
+.welcome-image {
+  width: 100%;
+  height: auto;
+  display: block; // Rimuove spazi bianchi indesiderati
+}
+
+.welcome-text {
+  font-family: var(--font-primary);
+  font-weight: 300;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  opacity: 0.9;
+  text-align: center;
+
+  p {
+    margin-bottom: 1rem;
+  }
+}
+
+.welcome-brand {
+  font-family: var(--font-headings); // Usa il font dei titoli
+  font-size: 1.2rem;
+  color: var(--color-primary); // Colore oro
+  margin-top: 1rem;
+  display: block;
+}
+
+/* === Stili Sezioni Menu === */
+.category-title {
+  font-family: var(--font-headings);
+  color: var(--color-primary);
+  font-size: 2.2rem;
+  font-weight: 700;
+  text-align: center;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 1rem;
+  margin: 2.5rem 0 2rem 0;
+}
+
+.menu-item {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  
+  /* Bordo più elegante (solido e leggero) */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  /* Effetto hover/active per interattività */
+  &:active .item-name,
+  &:hover .item-name {
+    color: var(--color-primary);
+  }
+}
+
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.item-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ffffff;
+  transition: color 0.2s ease-in-out; /* Per l'effetto hover */
+}
+
+.item-price {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  flex-shrink: 0; /* Non fa andare a capo il prezzo */
+}
+
+.item-description {
+  font-size: 0.9rem;
+  font-weight: 300;
+  margin-top: 0.5rem;
+  opacity: 0.8;
+  font-style: italic;
+}
+
+.item-ingredients {
+  font-size: 0.9rem;
+  font-weight: 300;
+  margin-top: 0.75rem;
+  opacity: 0.9;
+  
+  .ingredients-label {
+    font-weight: 600; // Grassetto
+    opacity: 1;
+    color: var(--color-text);
+  }
+}
+
+.item-info {
+  font-size: 0.8rem;
+  opacity: 0.6;
+  margin-top: 1rem; // Aumenta lo spazio
+  display: flex;
+  justify-content: space-between; // Allinea allergeni e surgelato
+  width: 100%;
+  
+  .frozen-item {
+    font-weight: bold;
+    color: var(--color-primary);
+  }
+}
+
+/* === Stili per la Legenda Allergeni === */
+.allergen-legend {
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.legend-title {
+  font-family: var(--font-headings);
+  color: var(--color-primary);
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.legend-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  column-count: 2; // Mostra su 2 colonne su schermi larghi
+  column-gap: 2rem;
+  
+  @media (max-width: 600px) {
+    column-count: 1; // Colonna singola su mobile
+  }
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+  font-weight: 300;
+  opacity: 0.8;
+  // Evita che gli item si spezzino tra le colonne
+  break-inside: avoid; 
+}
+
+.allergen-number {
+  font-weight: 700;
+  color: var(--color-primary);
+  font-size: 1rem;
+  margin-right: 0.75rem;
+  min-width: 20px; // Allinea i numeri
+  text-align: right;
+}
+
+/* === Stile Footer Social === */
+.footer-social {
+  text-align: center;
+  padding: 3rem 0 2rem 0;
+  margin-top: 3rem;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  justify-content: center;
+  gap: 2.5rem; // Spazio tra le icone
+
+  a {
+    font-size: 2.2rem; // Dimensione icone
+    color: var(--color-text);
+    opacity: 0.6;
+    transition: all 0.3s ease;
+
+    &:hover {
+      opacity: 1;
+      color: var(--color-primary); // Oro al passaggio del mouse
+      transform: scale(1.1);
+    }
+  }
+}
+
+/* === Stile Developer Credit (NUOVO) === */
+.developer-credit {
+  font-size: 0.85rem;
+  font-weight: 300;
+  opacity: 0.5;
+  margin-top: 2rem;
+  color: var(--color-text);
+
+  a {
+    font-size: 0.85rem; // Resetta la dimensione
+    font-weight: 600;
+    color: var(--color-text);
+    text-decoration: none;
+    opacity: 0.8;
+
+    &:hover {
+      opacity: 1;
+      color: var(--color-primary);
+      transform: none; // Rimuove lo zoom
+    }
+  }
+}
+
+/* === Stile Tasto Scroll-su (NUOVO) === */
+.scroll-to-top {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+
+  /* Stile bottone */
+  background-color: var(--color-primary); // Oro
+  color: var(--color-background); // Testo nero/scuro
+  border: none;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%; // Rotondo
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+
+  /* Animazione Entrata/Uscita */
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+  transition: all 0.3s ease-out;
+
+  /* Stato visibile */
+  &.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  &:hover {
+    filter: brightness(1.1); // Leggermente più luminoso
+  }
+}

@@ -1,0 +1,72 @@
+/* Colore di sfondo preso dal PDF */
+:host {
+  --splash-bg: #A38A53; 
+}
+
+.splash-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  display: flex;
+  cursor: pointer;
+  background-color: transparent;
+
+  /* Transizione per il fade-out DOPO l'apertura */
+  transition: opacity 0.5s ease 1s; 
+
+  &.hide {
+    opacity: 0;
+    pointer-events: none; // Rende non cliccabile
+  }
+}
+
+.splash-door {
+  width: 50%;
+  height: 100%;
+  background-size: cover;
+  background-color: var(--splash-bg);
+  
+  /* L'animazione 'cubic-bezier' la rende più fluida ed elegante */
+  transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+.left {
+  background-image: url('/assets/images/left-door.png');
+  background-position: right; 
+}
+
+.right {
+  background-image: url('/assets/images/right-door.png');
+  background-position: left; 
+}
+
+/* Animazione di apertura */
+.splash-container.hide .left {
+  transform: translateX(-100%);
+}
+.splash-container.hide .right {
+  transform: translateX(100%);
+}
+
+/* Stile per il logo sovrapposto */
+.splash-logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10000;
+  transition: opacity 0.4s ease;
+
+  img {
+    width: 200px; // Adatta alla tua immagine
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
+  }
+}
+
+/* Nasconde il logo mentre le porte si aprono */
+.splash-container.hide .splash-logo {
+  opacity: 0;
+}
