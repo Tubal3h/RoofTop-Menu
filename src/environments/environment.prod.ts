@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://ordersync-project-f2ms.onrender.com/api' // Your actual production API URL
+  apiUrl: 'beautiful-recreation-production.up.railway.app/api' // Your actual production API URL
 };
