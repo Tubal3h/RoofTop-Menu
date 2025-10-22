@@ -26,7 +26,14 @@
       
       <div class="item-header">
         <span class="item-name">{{ item.name[currentLang] }}</span>
-        <span class="item-price">{{ item.price | currency:'EUR' }}</span>
+        @if(item.quantitaDisponibile === 0) {
+          <span class="item-price">Non Disponibile </span>
+        }
+        @else {
+          <span class="item-price">{{ item.price | currency:'EUR' }}</span>
+        }
+        
+        
       </div>
       
       <p class="item-description" *ngIf="item.description && item.description[currentLang]">
