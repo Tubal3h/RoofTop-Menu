@@ -1,11 +1,10 @@
+<!-- splash-screen.html -->
 <div class="splash-container" 
      [class.hide]="startAnimation" 
-     (click)="startOpening()">
+     (click)="startOpening()"
+     (animationend)="animationFinished.emit()">
   
-  <div class="splash-door left">
-    </div>
-  
-  <div class="splash-door right">
-    </div>
+  <div class="splash-door left"></div>
+  <div class="splash-door right"></div>
 
-  </div>
+</div>

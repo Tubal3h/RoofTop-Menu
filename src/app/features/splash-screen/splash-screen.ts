@@ -1,31 +1,31 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+// src/app/features/splash-screen/splash-screen.ts
+import { Component, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-splash-screen',
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './splash-screen.html',
-  styleUrl: './splash-screen.scss'
+  styleUrl: './splash-screen.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SplashScreen implements OnInit{
+export class SplashScreen {
   @Output() animationFinished = new EventEmitter<void>();
+
   startAnimation = false;
 
-  ngOnInit(): void {
-    // Puoi ritardare l'avvio o avviarlo al click
-    // Per un test, avviamolo dopo 1 secondo
-    setTimeout(() => this.startOpening(), 1000);
-  }
-
+  /**
+   * Avvia l'animazione di apertura delle porte
+   */
   startOpening(): void {
-    if (this.startAnimation) return; // Previene doppi click
-
     this.startAnimation = true;
-
-    // Emette l'evento DOPO che l'animazione CSS è finita
-    // La nostra animazione dura 0.8s (transform) + 1s (opacity delay) = 1.8s
+    
+    // ✅ Emetti l'evento quando l'animazione finisce
+    // La somma dei tempi è: 0.8s (apertura porte) + 0.5s (fade-out) + 1s (delay) = 2.3s
+    // Arrotondiamo a 2500ms per sicurezza
     setTimeout(() => {
       this.animationFinished.emit();
-    }, 1800); 
+    }, 2500);
   }
 }

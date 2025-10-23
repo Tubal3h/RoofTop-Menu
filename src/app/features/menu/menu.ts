@@ -1,41 +1,30 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+// src/app/features/menu/menu.ts
+import { Component, OnInit, OnDestroy, HostListener, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-// Importa i componenti figli
-import { SplashScreen } from '@app/features/splash-screen/splash-screen'; 
+import { SplashScreen } from '@app/features/splash-screen/splash-screen';
 import { LanguageSwitcher } from '@app/features/language-switcher/language-switcher';
-// Importa il nostro nuovo Service
-import { MenuDataService, PublicMenuData } from '@app/core/services/menu-data/menu-data';
+import { MenuDataService, PublicMenuData, MenuCategory, MenuItem } from '@app/core/services/menu-data/menu-data';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faInstagram, faFacebook, faTwitter } from '@fortawesome/free-brands-svg-icons';
 import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
 
-interface MenuItem {
-  id: string;
-  price: number;
-  allergens: number[];
-  frozen?: boolean;
-}
-interface MenuCategory {
-  id: string;
-  items: MenuItem[];
-}
-interface Allergen {
-  id: string;
-  number: number;
-}
+type SupportedLanguage = 'it' | 'en' | 'fr';
 
 @Component({
   selector: 'app-menu',
-  imports: [CommonModule, TranslateModule, SplashScreen, LanguageSwitcher, FontAwesomeModule ],
+  standalone: true,
+  imports: [CommonModule, TranslateModule, SplashScreen, LanguageSwitcher, FontAwesomeModule],
   templateUrl: './menu.html',
-  styleUrl: './menu.scss'
+  styleUrl: './menu.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class Menu implements OnInit{
+export class Menu implements OnInit, OnDestroy {
   public publicData$?: Observable<PublicMenuData>;
   public isSplashing = true;
-  public currentLang: string;
+  public currentLang: SupportedLanguage = 'it';
 
   faInstagram = faInstagram;
   faFacebook = faFacebook;
@@ -45,57 +34,86 @@ export class Menu implements OnInit{
   public showScrollButton = false;
 
   constructor(
-    private menuDataService: MenuDataService, // Inietta il service
-    private translate: TranslateService
+    private menuDataService: MenuDataService,
+    private translate: TranslateService,
+    private cdr: ChangeDetectorRef
   ) {
-    // Imposta la lingua corrente
-    this.currentLang = this.translate.currentLang || this.translate.defaultLang || 'it';
+    this.currentLang = (this.translate.currentLang || this.translate.defaultLang || 'it') as SupportedLanguage;
     
-    // Ascolta i cambi di lingua
     this.translate.onLangChange.subscribe((event) => {
-      this.currentLang = event.lang;
+      this.currentLang = event.lang as SupportedLanguage;
+      this.cdr.markForCheck();
     });
   }
 
   ngOnInit(): void {
-    // Carichiamo i dati del menu dal file JSON
-    this.publicData$ = this.menuDataService.getMenuData();
+    // ✅ Applica l'ordinamento per prezzo dopo aver caricato i dati
+    this.publicData$ = this.menuDataService.getMenuData().pipe(
+      map(data => this.sortCategoriesByPrice(data))
+    );
   }
 
-  // Questo metodo viene chiamato dallo splash screen quando finisce l'animazione
+  ngOnDestroy(): void {
+    // Cleanup se necessario
+  }
+
+  /**
+   * ✅ Ordina i piatti per prezzo all'interno di ogni categoria
+   * Mantiene le categorie nello stesso ordine
+   */
+  private sortCategoriesByPrice(menuData: PublicMenuData): PublicMenuData {
+    return {
+      ...menuData,
+      categories: menuData.categories.map(category => ({
+        ...category,
+        items: [...category.items].sort((a, b) => a.price - b.price) // Ordina per prezzo crescente
+      }))
+    };
+  }
+
   onSplashFinished(): void {
     this.isSplashing = false;
+    this.cdr.markForCheck();
   }
 
-  /**
-   * Prende l'array di oggetti allergene e restituisce solo
-   * una stringa di numeri (es. "1, 4, 7")
-   */
+  public getLocalizedText(
+    text: { it: string; en: string; fr: string } | undefined, 
+    fallback: string = ''
+  ): string {
+    if (!text) return fallback;
+    return text[this.currentLang] || text['it'] || fallback;
+  }
+
   public getAllergenNumbers(allergens: any[]): string {
     if (!allergens || allergens.length === 0) {
-      return ''; // Ritorna stringa vuota se non ci sono allergeni
+      return '';
     }
-    // Questo è lo stesso codice che avevi nel template
-    return allergens.map(a => a.number).join(', ');
+    return allergens.map(a => a?.number).filter(n => n !== undefined).join(', ');
   }
 
-  /**
-   * HostListener che controlla lo scroll della finestra
-   */
+  trackByCategoryId(_index: number, category: MenuCategory): string {
+    return category._id;
+  }
+
+  trackByItemId(_index: number, item: MenuItem): string {
+    return item._id;
+  }
+
+  trackByAllergenId(_index: number, allergen: any): string {
+    return allergen._id || allergen.id;
+  }
+
   @HostListener('window:scroll', [])
   onWindowScroll() {
-    // Mostra il tasto se l'utente ha scrollato più di 300px
     const scrollPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
     if (scrollPosition > 300) {
       this.showScrollButton = true;
     } else {
       this.showScrollButton = false;
     }
+    this.cdr.markForCheck();
   }
 
-  /**
-   * Metodo chiamato al click del tasto per tornare su
-   */
   public scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
