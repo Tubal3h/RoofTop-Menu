@@ -241,14 +241,14 @@
   a {
     font-size: 0.85rem; // Resetta la dimensione
     font-weight: 600;
-    color: var(--color-text);
+    color: var(--color-primary);
     text-decoration: none;
     opacity: 0.8;
 
     &:hover {
       opacity: 1;
       color: var(--color-primary);
-      transform: none; // Rimuove lo zoom
+      font-size: 1rem;
     }
   }
 }
