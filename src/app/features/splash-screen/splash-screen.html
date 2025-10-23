@@ -1,10 +1,29 @@
-<!-- splash-screen.html -->
-<div class="splash-container" 
-     [class.hide]="startAnimation" 
-     (click)="startOpening()"
-     (animationend)="animationFinished.emit()">
+<!-- splash-screen.html - ELEGANTE CON LOGO AL CENTRO DURANTE APERTURA -->
+<div class="splash-wrapper" 
+     [class.opening]="startAnimation" 
+     (click)="startOpening()">
   
-  <div class="splash-door left"></div>
-  <div class="splash-door right"></div>
+  <!-- SPLASH CONTAINER (BACKGROUND) -->
+  <div class="splash-container">
+    <!-- LEFT DOOR (SMOOTH MOTION) -->
+    <div class="splash-door left" role="presentation"></div>
+    
+    <!-- RIGHT DOOR (SMOOTH MOTION) -->
+    <div class="splash-door right" role="presentation"></div>
+    
+    <!-- LOGO AL CENTRO (APPARE CON L'APERTURA PORTE) -->
+    <div class="splash-logo" role="presentation">
+      <div class="logo-wrapper">
+        <img src="assets/images/logo.png" alt="Logo" class="logo-image">
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- INTERACTION HINT (FADE OUT) -->
+  <div class="interaction-hint">
+    <span class="hint-text">Tap To Continue</span>
+  </div>
 
 </div>

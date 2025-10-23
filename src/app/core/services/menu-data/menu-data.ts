@@ -2,7 +2,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { tap, filter } from 'rxjs/operators';
+import { tap, filter, distinctUntilChanged } from 'rxjs/operators';
 import { environment } from '@env/environment';
 import { SocketService } from '@app/core/services/socket-service/socket';
 
@@ -35,12 +35,13 @@ export interface PublicMenuData {
 })
 export class MenuDataService implements OnDestroy {
   
-  private readonly apiUrl = `${environment.apiUrl}/public/menu-data`;
+  private readonly apiUrl = `${environment.apiUrl}/api/public/menu-data`;
   
   // BehaviorSubject per mantenere i dati sempre aggiornati
   private menuDataSubject = new BehaviorSubject<PublicMenuData | null>(null);
   public menuData$: Observable<PublicMenuData> = this.menuDataSubject.pipe(
-    filter(data => data !== null) // ✅ Filtra i null
+    filter(data => data !== null),
+    distinctUntilChanged() // ✅ Evita emissioni duplicate
   ) as Observable<PublicMenuData>;
   
   private subscriptions = new Subscription();
@@ -56,13 +57,11 @@ export class MenuDataService implements OnDestroy {
    * Carica i dati del menu dal backend
    */
   getMenuData(): Observable<PublicMenuData> {
-    // Se i dati sono già caricati, ritorna il BehaviorSubject filtrato
     const cached = this.menuDataSubject.value;
     if (cached) {
       return this.menuData$;
     }
 
-    // Altrimenti, carica dal backend
     return this.http.get<PublicMenuData>(this.apiUrl).pipe(
       tap(data => {
         console.log('[MenuDataService] Menu caricato dal backend:', data);
@@ -75,10 +74,8 @@ export class MenuDataService implements OnDestroy {
    * Inizializza i listener Socket per gli aggiornamenti in tempo reale
    */
   private initializeSocketListeners(): void {
-    // Connetti il socket
     this.socketService.connect();
 
-    // Ascolta aggiornamenti su singoli piatti del menu
     this.subscriptions.add(
       this.socketService.listen<{
         _id: string;
@@ -91,7 +88,6 @@ export class MenuDataService implements OnDestroy {
       })
     );
 
-    // Ascolta quando un piatto è completamente esaurito
     this.subscriptions.add(
       this.socketService.listen<{ _id: string }>('menu_item_sold_out').subscribe(data => {
         console.log('[MenuDataService] Piatto esaurito:', data._id);
@@ -103,7 +99,6 @@ export class MenuDataService implements OnDestroy {
       })
     );
 
-    // Ascolta quando il menu viene resettato
     this.subscriptions.add(
       this.socketService.listen<PublicMenuData>('menu_reset').subscribe(newMenuData => {
         console.log('[MenuDataService] Menu resettato:', newMenuData);
@@ -112,8 +107,9 @@ export class MenuDataService implements OnDestroy {
     );
   }
 
+
   /**
-   * Aggiorna un piatto nel menu locale (in modo immutabile)
+   * ✅ CORRETTO: Aggiorna SOLO il piatto modificato (immutabile)
    */
   private updateMenuItemLocally(updatedItem: {
     _id: string;
@@ -127,34 +123,47 @@ export class MenuDataService implements OnDestroy {
       return;
     }
 
-    // ✅ Crea una copia immutabile del menu con tipizzazione corretta
+    let itemFound = false;
+
+    // ✅ Crea una copia immutabile del menu
     const updatedMenu: PublicMenuData = {
       ...currentMenu,
-      categories: currentMenu.categories.map((category: MenuCategory) => ({
-        ...category,
-        items: (category.items || []).map((item: MenuItem) => {
-          if (item._id === updatedItem._id) {
-            console.log(
-              `[MenuDataService] Aggiornamento piatto ${item._id}: ` +
-              `quantita=${updatedItem.quantitaDisponibile}, ` +
-              `disponibile=${updatedItem.disponibile}`
-            );
-            // ✅ Aggiorna il piatto con tipizzazione corretta
-            return {
-              ...item,
-              quantitaDisponibile: updatedItem.quantitaDisponibile,
-              disponibile: updatedItem.disponibile
-            };
-          }
-          return item;
-        })
-      }))
+      categories: currentMenu.categories.map((category: MenuCategory) => {
+        if (itemFound) {
+          return category;
+        }
+
+        const itemIndex = category.items?.findIndex(item => item._id === updatedItem._id) ?? -1;
+
+        if (itemIndex === -1) {
+          return category;
+        }
+
+        itemFound = true;
+        console.log(
+          `[MenuDataService] Aggiornamento piatto ${updatedItem._id}: ` +
+          `quantita=${updatedItem.quantitaDisponibile}, ` +
+          `disponibile=${updatedItem.disponibile}`
+        );
+
+        const updatedItems = [...category.items];
+        updatedItems[itemIndex] = {
+          ...updatedItems[itemIndex],
+          quantitaDisponibile: updatedItem.quantitaDisponibile,
+          disponibile: updatedItem.disponibile // ✅ IMPORTANTE: Mantieni il piatto nel menu anche se false
+        };
+
+        return {
+          ...category,
+          items: updatedItems // ✅ NON filtrare i piatti
+        };
+      })
     };
 
-    // Emetti i dati aggiornati
     this.menuDataSubject.next(updatedMenu);
     console.log('[MenuDataService] Menu aggiornato e emesso');
   }
+
 
   /**
    * Forza il ricaricamento del menu dal backend
@@ -169,7 +178,7 @@ export class MenuDataService implements OnDestroy {
   }
 
   /**
-   * Ottieni i dati attuali senza Observable (se necessario)
+   * Ottieni i dati attuali senza Observable
    */
   getCurrentMenuData(): PublicMenuData | null {
     return this.menuDataSubject.value;

@@ -95,6 +95,11 @@
   &:hover .item-name {
     color: var(--color-primary);
   }
+
+    &.unavailable {
+    opacity: 0.5;
+    pointer-events: none;
+  }
 }
 
 .item-header {

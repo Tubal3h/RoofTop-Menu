@@ -27,7 +27,7 @@
       
       <div class="item-header">
         <span class="item-name">{{ getLocalizedText(item.name, 'Articolo') }}</span>
-        @if(item.quantitaDisponibile === 0) {
+        @if(!item.disponibile) {
           <span class="item-price">Non Disponibile</span>
         }
         @else {

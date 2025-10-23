@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://beautiful-recreation-production.up.railway.app/api' // Your actual production API URL
+  apiUrl: 'https://beautiful-recreation-production.up.railway.apppi' // Your actual production API URL
 };

@@ -1,9 +1,20 @@
-/* Colore di sfondo preso dal PDF */
+// ============================================================================
+// SPLASH SCREEN - ELEGANTE E MODERNO CON LOGO AL CENTRO
+// ============================================================================
+
 :host {
-  --splash-bg: #A38A53; 
+  display: block;
 }
 
-.splash-container {
+* {
+  box-sizing: border-box;
+}
+
+// ============================================================================
+// 1. SPLASH WRAPPER (MAIN CONTAINER)
+// ============================================================================
+
+.splash-wrapper {
   position: fixed;
   top: 0;
   left: 0;
@@ -11,62 +22,267 @@
   height: 100vh;
   z-index: 9999;
   display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  background-color: transparent;
+  background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
+  overflow: hidden;
 
-  /* Transizione per il fade-out DOPO l'apertura */
-  transition: opacity 0.5s ease 1s; 
+  // ✅ TRANSITION PER FADE OUT ELEGANTE
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.9s,
+              backdrop-filter 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.9s;
 
-  &.hide {
+  &.opening {
     opacity: 0;
-    pointer-events: none; // Rende non cliccabile
+    pointer-events: none;
+    backdrop-filter: blur(10px);
   }
 }
 
+// ============================================================================
+// 2. SPLASH CONTAINER (DOORS + LOGO)
+// ============================================================================
+
+.splash-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  z-index: 1;
+}
+
+// ============================================================================
+// 3. SPLASH DOORS (LEFT & RIGHT)
+// ============================================================================
+
 .splash-door {
+  position: relative;
   width: 50%;
   height: 100%;
   background-size: cover;
-  background-color: var(--splash-bg);
-  
-  /* L'animazione 'cubic-bezier' la rende più fluida ed elegante */
-  transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: var(--splash-bg, #d4a574);
+
+  // ✅ SMOOTH, ELEGANT ANIMATION
+  transition: transform 1s cubic-bezier(0.6, 0.04, 0.98, 0.335) 0s;
+
+  // PSEUDO-ELEMENT PER OVERLAY ELEGANTE
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to right,
+      rgba(212, 165, 55, 0.1) 0%,
+      transparent 50%,
+      rgba(212, 165, 55, 0.1) 100%
+    );
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 0.6s ease 0.4s;
+  }
+
+  // STATE: OPENING
+  @at-root .splash-wrapper.opening & {
+    &::before {
+      opacity: 1;
+    }
+  }
 }
 
-.left {
+// LEFT DOOR
+.splash-door.left {
   background-image: url('/assets/images/left-door.png');
-  background-position: right; 
+  background-position: right center;
+  // box-shadow: inset -10px 0 30px rgba(0, 0, 0, 0.3);
+
+  @at-root .splash-wrapper.opening & {
+    transform: translateX(-101%);
+  }
 }
 
-.right {
+// RIGHT DOOR
+.splash-door.right {
   background-image: url('/assets/images/right-door.png');
-  background-position: left; 
+  background-position: left center;
+  // box-shadow: inset 10px 0 30px rgba(0, 0, 0, 0.3);
+
+  @at-root .splash-wrapper.opening & {
+    transform: translateX(101%);
+  }
 }
 
-/* Animazione di apertura */
-.splash-container.hide .left {
-  transform: translateX(-100%);
-}
-.splash-container.hide .right {
-  transform: translateX(100%);
-}
+// ============================================================================
+// 4. SPLASH LOGO (AL CENTRO - APPARE CON APERTURA PORTE)
+// ============================================================================
 
-/* Stile per il logo sovrapposto */
 .splash-logo {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 10000;
-  transition: opacity 0.4s ease;
+  z-index: 10;
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 2rem;
 
-  img {
-    width: 200px; // Adatta alla tua immagine
-    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
+  // ✅ LOGO HIDDEN INITIALLY, APPEARS WHEN DOORS OPEN
+  opacity: 0;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.4s;
+  pointer-events: none;
+
+  // ✅ STATE: OPENING - LOGO BECOMES VISIBLE
+  @at-root .splash-wrapper.opening & {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    pointer-events: auto;
+  }
+
+  // ✅ STATE: FADING OUT - LOGO HIDES AGAIN
+  @at-root .splash-wrapper.opening & {
+    animation: logoFadeOut 0.5s cubic-bezier(0.4, 0, 0.2, 1) 1.4s forwards;
   }
 }
 
-/* Nasconde il logo mentre le porte si aprono */
-.splash-container.hide .splash-logo {
-  opacity: 0;
+.logo-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: logoFloat 3s ease-in-out infinite;
+
+  @at-root .splash-wrapper.opening & {
+    animation: logoFloatShort 0.8s ease-in-out;
+  }
+}
+
+.logo-image {
+  width: 100%;
+  height: auto;
+
+}
+
+// ✅ LOGO FLOAT ANIMATION (WHEN DOORS CLOSED)
+@keyframes logoFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+// ✅ LOGO FLOAT ANIMATION (WHEN DOORS OPENING - SHORTER)
+@keyframes logoFloatShort {
+  0% {
+    transform: translateY(0) scale(0.9);
+  }
+  50% {
+    transform: translateY(-8px) scale(1);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+// ✅ LOGO FADE OUT ANIMATION
+@keyframes logoFadeOut {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}
+
+
+// ============================================================================
+// 6. INTERACTION HINT (TAP TO CONTINUE)
+// ============================================================================
+
+.interaction-hint {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  text-align: center;
+
+  transition: opacity 0.4s ease;
+
+  @at-root .splash-wrapper.opening & {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  @media (max-width: 480px) {
+    bottom: 30px;
+  }
+}
+
+.hint-text {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 2rem;
+  font-weight: 1000;
+  color: #1c2954;
+  opacity: 1;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  animation: fadeInOut 2.5s ease-in-out infinite;
+}
+
+@keyframes fadeInOut {
+  0%, 100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+// ============================================================================
+// 7. RESPONSIVE ADJUSTMENTS
+// ============================================================================
+
+
+
+// ============================================================================
+// 8. ACCESSIBILITY
+// ============================================================================
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .splash-door {
+    transition: none !important;
+  }
+
+  .splash-logo {
+    transition: none !important;
+  }
+}
+
+// ============================================================================
+// 9. DARK MODE SUPPORT
+// ============================================================================
+
+@media (prefers-color-scheme: dark) {
+  .splash-wrapper {
+    background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%);
+  }
+
+  .logo-image {
+    filter: drop-shadow(0 12px 32px rgba(212, 175, 55, 0.4));
+  }
 }
