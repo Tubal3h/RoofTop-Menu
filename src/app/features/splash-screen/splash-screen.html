@@ -1,29 +1,105 @@
-<!-- splash-screen.html - ELEGANTE CON LOGO AL CENTRO DURANTE APERTURA -->
+<!-- splash-screen.component.html -->
+<!-- 
+  COMPONENTE SPLASH SCREEN
+  Schermata di caricamento iniziale con animazione di apertura porte
+  Mostra il logo al centro e si anima quando l'utente clicca/tocca
+-->
+
+<!-- 
+  1. CONTENITORE PRINCIPALE SPLASH
+  position: fixed copre l'intera viewport
+  [class.opening]="startAnimation" aggiunge la classe CSS 'opening' quando startAnimation è true
+  (click)="startOpening()" chiama il metodo TypeScript quando l'utente clicca ovunque
+  cursor: pointer indica all'utente che può cliccare
+-->
 <div class="splash-wrapper" 
      [class.opening]="startAnimation" 
      (click)="startOpening()">
   
-  <!-- SPLASH CONTAINER (BACKGROUND) -->
+  <!-- 
+    2. CONTENITORE PORTE E LOGO
+    Racchiude le due porte e il logo centrale
+    position: absolute permette il posizionamento assoluto degli elementi figli
+  -->
   <div class="splash-container">
-    <!-- LEFT DOOR (SMOOTH MOTION) -->
+    
+    <!-- 
+      3. PORTA SINISTRA
+      width: 50% copre metà dello schermo
+      background-image: immagine della porta sinistra
+      transform: translateX(-101%) quando opening è true (porta scorre a sinistra)
+      role="presentation" indica agli screen reader che è puramente decorativo
+    -->
     <div class="splash-door left" role="presentation"></div>
     
-    <!-- RIGHT DOOR (SMOOTH MOTION) -->
+    <!-- 
+      4. PORTA DESTRA
+      Stesso funzionamento della porta sinistra ma scorre verso destra
+      transform: translateX(101%) quando opening è true
+    -->
     <div class="splash-door right" role="presentation"></div>
     
-    <!-- LOGO AL CENTRO (APPARE CON L'APERTURA PORTE) -->
+    <!-- 
+      5. LOGO CENTRALE
+      position: absolute posizionato al centro assoluto
+      Appare gradualmente quando le porte si aprono
+      opacity: 0 inizialmente invisibile, diventa opacity: 1 con animazione
+    -->
     <div class="splash-logo" role="presentation">
+      <!-- 
+        6. WRAPPER LOGO CON ANIMAZIONE
+        animation: logoFloat fa "galleggiare" il logo con movimento su/giù
+        Quando le porte si aprono, passa a logoFloatShort (movimento più breve)
+      -->
       <div class="logo-wrapper">
+        <!-- 
+          7. IMMAGINE LOGO
+          width: 100% si adatta alla dimensione del contenitore
+          height: auto mantiene le proporzioni
+          alt="Logo" importante per l'accessibilità
+        -->
         <img src="assets/images/logo.png" alt="Logo" class="logo-image">
       </div>
     </div>
   </div>
-
-
-
-  <!-- INTERACTION HINT (FADE OUT) -->
+  
+  <!-- 
+    8. SUGGERIMENTO INTERAZIONE
+    Testo "Tap To Continue" che invita l'utente a cliccare
+    position: absolute bottom: 40px posizionato in basso al centro
+    opacity: 0 quando opening è true (scompare durante l'animazione)
+    animation: fadeInOut pulsa per attirare l'attenzione
+  -->
   <div class="interaction-hint">
     <span class="hint-text">Tap To Continue</span>
   </div>
-
 </div>
+
+<!-- 
+  FLUSSO DELL'ANIMAZIONE:
+  
+  1. STATO INIZIALE (startAnimation = false)
+     - Porte chiuse (translateX = 0%)
+     - Logo invisibile (opacity = 0)
+     - Hint visibile e pulsante (fadeInOut animation)
+  
+  2. UTENTE CLICCA → startOpening() viene chiamato
+     - startAnimation diventa true
+     - Classe 'opening' viene aggiunta al wrapper
+  
+  3. ANIMAZIONE APERTURA (startAnimation = true)
+     - Porte scivolano ai lati (translateX = ±101%)
+     - Logo appare gradualmente (opacity = 1) dopo 0.4s
+     - Logo galleggia brevemente (logoFloatShort)
+     - Hint scompare (opacity = 0)
+  
+  4. FADE OUT FINALE (dopo 1.4s)
+     - Logo scompare con logoFadeOut animation
+     - Wrapper intero fade out (opacity = 0) dopo 0.9s
+     - pointer-events: none disabilita i click
+  
+  5. EMISSIONE EVENTO (dopo animazione completa)
+     - Component emette (animationFinished)
+     - Parent component (menu) riceve l'evento
+     - Splash screen viene rimosso dal DOM
+-->

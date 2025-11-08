@@ -1,30 +1,284 @@
-/* Importa i font di lusso da Google Fonts */
+/*
+  FOGLIO DI STILE GLOBALE PRINCIPALE
+  Configurazione iniziale di tutta l'applicazione
+  Importa font, definisce variabili CSS e reset base
+*/
+
+/*
+  IMPORTAZIONE FONT GOOGLE FONTS
+  @import url() carica i font direttamente da Google Fonts
+  
+  Font caricati:
+  1. Playfair Display (wght@700)
+     - Font serif elegante e lussuoso
+     - Peso 700 = Bold (grassetto)
+     - Usato per titoli, heading, brand name
+     - Carattere classico per design premium
+  
+  2. Montserrat (wght@300;400;600;700)
+     - Font sans-serif moderno e pulito
+     - Pesi multipli: 300 (light), 400 (normal), 600 (semibold), 700 (bold)
+     - Usato per body text, descrizioni, UI elements
+     - Leggibilità superiore su schermi
+  
+  display=swap
+  - Strategia di caricamento font
+  - 'swap' = mostra il testo subito con font di fallback
+  - Quando il font vero arriva, lo scambia (swap)
+  - Evita il "Flash of Unstyled Text" (FOUT)
+  - Migliore esperienza utente durante il caricamento
+*/
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@300;400;600;700&display=swap');
 
-/* Definizione delle variabili di colore per il look 
-  Oro (#D4AF37) e Nero/Grigio scuro (#121212)
+/*
+  VARIABILI CSS GLOBALI
+  :root = elemento radice dell'HTML
+  Tutte le variabili definite qui sono accessibili in tutta l'app
+  
+  Variabili CSS sintassi: --nome-variabile: valore;
+  Uso nei CSS: color: var(--color-primary);
+  Vantaggio: cambiare il colore una volta cambia ovunque nell'app
 */
 :root {
-  --font-primary: 'Montserrat', sans-serif;
-  --font-headings: 'Playfair Display', serif;
+  /*
+    VARIABILI FONT
+    Vengono usate in tutto il progetto per mantenere coerenza
+  */
   
-  --color-background: #121212; /* Nero profondo */
-  --color-text: #E0E0E0;       /* Bianco non abbagliante */
-  --color-primary: #D4AF37;   /* Oro elegante */
-  --color-border: #333;        /* Bordo discreto */
+  /*
+    --font-primary: 'Montserrat', sans-serif
+    Font principale per il corpo del testo
+    'Montserrat' = il font Google Fonts preferito
+    'sans-serif' = fallback generico se Montserrat non carica
+    Usato per descrizioni, prezzi, body text, menu items
+    
+    Dove usato:
+    - .item-name, .item-price, .item-description
+    - .welcome-text, .hint-text
+    - Tutti gli elementi di testo generale
+  */
+  --font-primary: 'Montserrat', sans-serif;
+
+  /*
+    --font-headings: 'Playfair Display', serif
+    Font per i titoli e heading
+    'Playfair Display' = font serif elegante da Google Fonts
+    'serif' = fallback generico (font con grazie)
+    Usato per titoli importanti, brand name, sezioni principali
+    
+    Dove usato:
+    - .category-title (titoli categorie menu)
+    - .welcome-brand (nome "Spritzeria Barberini")
+    - .legend-title (titolo legenda allergeni)
+    - Tutti gli H2, H3, titoli principali
+  */
+  --font-headings: 'Playfair Display', serif;
+
+  /*
+    VARIABILI COLORE
+    Palette di colori lussuosa: Oro e Nero
+    Design minimale ed elegante stile premium
+  */
+
+  /*
+    --color-background: #121212
+    Colore di sfondo principale
+    #121212 = Nero profondo (quasi puro nero #000000 ma leggermente grigio)
+    Perché non puro nero?
+    - Puro nero (#000000) è troppo duro per gli occhi
+    - #121212 è OLED-friendly (i display OLED spengono i pixel completamente)
+    - Riduce l'affaticamento degli occhi in modalità scura
+    - Crea contrasto migliore con i testi chiari
+    
+    Usato per:
+    - body background
+    - .splash-wrapper background
+    - .menu-wrapper background
+    - Tutti gli sfondi scuri principali
+  */
+  --color-background: #121212;
+
+  /*
+    --color-text: #E0E0E0
+    Colore principale del testo
+    #E0E0E0 = Bianco non abbagliante (grigio molto chiaro)
+    Perché non bianco puro?
+    - Bianco puro (#FFFFFF) è troppo abbagliante su sfondo nero
+    - Affatica gli occhi, specialmente con lunghe letture
+    - #E0E0E0 è Material Design standard per testi su dark mode
+    - Crea contrasto sufficiente ma confortevole
+    
+    Usato per:
+    - body color
+    - .item-name, .item-price
+    - .welcome-text
+    - Tutti i testi secondari
+  */
+  --color-text: #E0E0E0;
+
+  /*
+    --color-primary: #D4AF37
+    Colore principale dell'identità visiva
+    #D4AF37 = Oro elegante e lussuoso
+    Perché l'oro?
+    - Colore premium e di lusso
+    - Associato a eleganza, ricchezza, qualità
+    - Perfetto per ristorante/bar high-end
+    - Contrasta bene sia su nero che su grigio
+    
+    RGB equivalente: rgb(212, 175, 55)
+    
+    Usato per:
+    - .category-title (titoli categorie)
+    - .welcome-brand (nome brand)
+    - .item-price (prezzo articoli)
+    - .allergen-number (numeri allergeni)
+    - .footer-social a:hover (icone social al hover)
+    - Accenti e elementi importanti
+    - Pulsante scroll-to-top background
+    - Elementi interattivi e highlights
+  */
+  --color-primary: #D4AF37;
+
+  /*
+    --color-border: #333
+    Colore dei bordi e linee di separazione
+    #333 = Grigio molto scuro (quasi nero)
+    Usato per:
+    - border-bottom delle categorie
+    - Linee di separazione articoli
+    - Bordi discreti che non distolgono l'attenzione
+    - Non è nero puro per evitare durezza eccessiva
+  */
+  --color-border: #333;
 }
 
-/* Reset base */
+/*
+  RESET CSS BASE
+  Ripristina gli stili predefiniti del browser
+  Crea una base coerente per lo styling personalizzato
+*/
+
+/*
+  UNIVERSAL SELECTOR
+  * = tutti gli elementi HTML
+*/
 * {
+  /*
+    box-sizing: border-box
+    Cambia il modo in cui viene calcolato il width/height
+    
+    box-sizing: content-box (default browser)
+    width = solo il contenuto
+    width totale = width + padding + border
+    Causa confusione nel layout
+    
+    box-sizing: border-box (nostro)
+    width = contenuto + padding + border
+    width totale = width
+    Molto più prevedibile e facile da gestire
+    
+    Standard moderno: quasi tutti i nuovi CSS framework usano border-box
+  */
   box-sizing: border-box;
 }
 
+/*
+  STILI DEL BODY
+  Elemento radice visibile dove renderizzare il contenuto
+*/
 body {
+  /*
+    background-color: var(--color-background)
+    Usa la variabile CSS per il colore di sfondo nero profondo
+    Applica il nero #121212 a tutta la pagina
+  */
   background-color: var(--color-background);
+
+  /*
+    color: var(--color-text)
+    Colore di testo predefinito per l'intera app
+    Bianco non abbagliante #E0E0E0
+    Tutti gli elementi ereditano questo colore se non specificato diversamente
+  */
   color: var(--color-text);
+
+  /*
+    font-family: var(--font-primary)
+    Font predefinito per il corpo del testo
+    'Montserrat', sans-serif
+    Tutti gli elementi ereditano questo font se non specificato (vedi font-headings)
+  */
   font-family: var(--font-primary);
+
+  /*
+    margin: 0; padding: 0
+    Rimuove i margini e padding predefiniti del browser
+    Il browser aggiunge spazi automatici che non vogliamo
+    Questa è la pratica standard per avere pieno controllo del layout
+  */
   margin: 0;
   padding: 0;
+
+  /*
+    -webkit-font-smoothing: antialiased
+    Flag per browser webkit (Chrome, Safari, Edge)
+    antialiased = rende i font più netti e leggibili su schermo
+    Usa subpixel rendering per bordi meno frastagliati
+    Migliora la leggibilità dei testi piccoli
+  */
   -webkit-font-smoothing: antialiased;
+
+  /*
+    -moz-osx-font-smoothing: grayscale
+    Flag per Firefox su macOS
+    grayscale = rendering grayscale per font più netti
+    Simile a antialiased ma ottimizzato per macOS
+    Crea testi più nitidi e leggibili
+  */
   -moz-osx-font-smoothing: grayscale;
 }
+
+/*
+  GERARCHIA DELL'APPLICAZIONE:
+  
+  1. IMPORT FONT
+     Carica Playfair Display e Montserrat da Google Fonts
+  
+  2. :ROOT VARIABLES
+     Definisce colori e font come variabili CSS globali
+     Accessibili in tutta l'app
+  
+  3. RESET BASE
+     *: box-sizing border-box per layout prevedibile
+     body: colori, font, spacing base
+  
+  4. COMPONENTI SPECIFICI
+     Ogni componente (menu, splash, ecc.) eredita questi stili base
+     E aggiunge i propri stili specifici
+  
+  FLUSSO DI EREDITARIETÀ:
+  
+  body {
+    background: #121212
+    color: #E0E0E0
+    font-family: Montserrat
+  }
+  
+  ↓ Tutti gli elementi ereditano
+  
+  .category-title {
+    font-family: override a Playfair Display ← specifico
+    color: var(--color-primary) ← oro #D4AF37
+  }
+  
+  .item-price {
+    font-family: Montserrat ← ereditato da body
+    color: var(--color-primary) ← oro #D4AF37
+  }
+  
+  .welcome-text {
+    font-family: Montserrat ← ereditato da body
+    color: #E0E0E0 ← ereditato da body
+  }
+*/

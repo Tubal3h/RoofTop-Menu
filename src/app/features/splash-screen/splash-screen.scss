@@ -1,37 +1,76 @@
-// ============================================================================
-// SPLASH SCREEN - ELEGANTE E MODERNO CON LOGO AL CENTRO
-// ============================================================================
+/* splash-screen.component.scss */
+/* 
+  FOGLIO DI STILE PER SPLASH SCREEN
+  Gestisce l'animazione di apertura porte con logo centrale
+  Include transizioni, keyframes e supporto accessibilità
+*/
 
+/* 
+  HOST ELEMENT
+  :host rappresenta l'elemento componente Angular stesso (<app-splash-screen>)
+  display: block lo rende un elemento block-level
+*/
 :host {
   display: block;
 }
 
+/* 
+  RESET BOX-SIZING
+  box-sizing: border-box include padding e border nella larghezza/altezza totale
+  Previene problemi di dimensionamento
+*/
 * {
   box-sizing: border-box;
 }
 
-// ============================================================================
-// 1. SPLASH WRAPPER (MAIN CONTAINER)
-// ============================================================================
+/* ========================================================================== */
+/* 1. SPLASH WRAPPER (CONTENITORE PRINCIPALE) */
+/* ========================================================================== */
 
+/* 
+  Contenitore a schermo intero che copre tutta la viewport
+  Gestisce il fade-out finale dell'intera splash screen
+*/
 .splash-wrapper {
+  /* position: fixed fissa l'elemento rispetto alla viewport (non scrolla) */
   position: fixed;
   top: 0;
   left: 0;
+  /* 100vw = 100% della viewport width (larghezza finestra browser) */
   width: 100vw;
+  /* 100vh = 100% della viewport height (altezza finestra browser) */
   height: 100vh;
+  /* z-index: 9999 assicura che sia sopra tutti gli altri elementi */
   z-index: 9999;
+  /* display: flex abilita flexbox per centrare il contenuto */
   display: flex;
+  /* align-items: center centra verticalmente */
   align-items: center;
+  /* justify-content: center centra orizzontalmente */
   justify-content: center;
+  /* cursor: pointer indica che l'area è cliccabile */
   cursor: pointer;
+  /* linear-gradient crea uno sfondo gradiente scuro elegante */
   background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
+  /* overflow: hidden nasconde qualsiasi contenuto che esce dai bordi */
   overflow: hidden;
 
-  // ✅ TRANSITION PER FADE OUT ELEGANTE
+  /* 
+    TRANSIZIONI PER FADE OUT ELEGANTE
+    Quando .opening viene aggiunto, l'intero wrapper fa fade-out
+    cubic-bezier(0.4, 0, 0.2, 1) = curva di velocità Material Design
+    0.9s = ritardo prima che inizi il fade (permette alle porte di aprirsi prima)
+  */
   transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.9s,
               backdrop-filter 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.9s;
 
+  /* 
+    STATO OPENING
+    Quando startAnimation è true, questa classe viene aggiunta
+    opacity: 0 rende l'intera splash invisibile
+    pointer-events: none disabilita i click durante il fade-out
+    backdrop-filter: blur(10px) sfoca lo sfondo dietro (effetto elegante)
+  */
   &.opening {
     opacity: 0;
     pointer-events: none;
@@ -39,41 +78,66 @@
   }
 }
 
-// ============================================================================
-// 2. SPLASH CONTAINER (DOORS + LOGO)
-// ============================================================================
+/* ========================================================================== */
+/* 2. SPLASH CONTAINER (CONTENITORE PORTE + LOGO) */
+/* ========================================================================== */
 
+/* 
+  Contenitore interno per le porte e il logo
+  position: absolute permette il posizionamento assoluto degli elementi figli
+*/
 .splash-container {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  /* display: flex allinea le due porte orizzontalmente */
   display: flex;
   z-index: 1;
 }
 
-// ============================================================================
-// 3. SPLASH DOORS (LEFT & RIGHT)
-// ============================================================================
+/* ========================================================================== */
+/* 3. SPLASH DOORS (PORTE SINISTRA E DESTRA) */
+/* ========================================================================== */
 
+/* 
+  Stile base per entrambe le porte
+  Ogni porta occupa il 50% della larghezza dello schermo
+*/
 .splash-door {
   position: relative;
+  /* width: 50% ogni porta occupa metà schermo */
   width: 50%;
   height: 100%;
+  /* background-size: cover l'immagine copre tutto lo spazio disponibile */
   background-size: cover;
+  /* background-position: center centra l'immagine */
   background-position: center;
   background-repeat: no-repeat;
+  /* var(--splash-bg, #d4a574) usa la variabile CSS o il fallback color oro */
   background-color: var(--splash-bg, #d4a574);
 
-  // ✅ SMOOTH, ELEGANT ANIMATION
+  /* 
+    TRANSIZIONE SMOOTH ED ELEGANTE
+    cubic-bezier(0.6, 0.04, 0.98, 0.335) = curva veloce all'inizio, lenta alla fine
+    1s = durata dell'animazione di scivolamento
+    0s = delay 0 secondi (inizia immediatamente quando .opening viene aggiunto)
+  */
   transition: transform 1s cubic-bezier(0.6, 0.04, 0.98, 0.335) 0s;
 
-  // PSEUDO-ELEMENT PER OVERLAY ELEGANTE
+  /* 
+    PSEUDO-ELEMENTO ::BEFORE PER OVERLAY ELEGANTE
+    Aggiunge un gradiente luminoso sopra le porte durante l'apertura
+    Effetto di "luce" che entra quando si aprono le porte
+  */
   &::before {
+    /* content: '' necessario per far apparire il pseudo-elemento */
     content: '';
     position: absolute;
+    /* inset: 0 = shorthand per top, right, bottom, left tutti a 0 */
     inset: 0;
+    /* Gradiente orizzontale che va da leggermente dorato ai lati a trasparente al centro */
     background: linear-gradient(
       to right,
       rgba(212, 165, 55, 0.1) 0%,
@@ -81,11 +145,17 @@
       rgba(212, 165, 55, 0.1) 100%
     );
     z-index: 2;
+    /* opacity: 0 inizialmente invisibile */
     opacity: 0;
+    /* transition: appare gradualmente in 0.6s dopo 0.4s di delay */
     transition: opacity 0.6s ease 0.4s;
   }
 
-  // STATE: OPENING
+  /* 
+    STATO OPENING - OVERLAY DIVENTA VISIBILE
+    @at-root .splash-wrapper.opening & = seleziona .splash-door dentro .splash-wrapper.opening
+    Quando le porte si aprono, l'overlay luminoso diventa visibile
+  */
   @at-root .splash-wrapper.opening & {
     &::before {
       opacity: 1;
@@ -93,82 +163,135 @@
   }
 }
 
-// LEFT DOOR
+/* 
+  PORTA SINISTRA
+  background-image: immagine della porta sinistra
+  background-position: right center allinea l'immagine a destra (per mantenere il centro visibile)
+*/
 .splash-door.left {
   background-image: url('/assets/images/left-door.png');
   background-position: right center;
-  // box-shadow: inset -10px 0 30px rgba(0, 0, 0, 0.3);
 
+  /* 
+    ANIMAZIONE APERTURA PORTA SINISTRA
+    transform: translateX(-101%) sposta la porta completamente fuori a sinistra
+    -101% invece di -100% per evitare uno spazio visibile al centro
+  */
   @at-root .splash-wrapper.opening & {
     transform: translateX(-101%);
   }
 }
 
-// RIGHT DOOR
+/* 
+  PORTA DESTRA
+  Stesso funzionamento della porta sinistra ma specchiato
+  background-position: left center allinea a sinistra
+*/
 .splash-door.right {
   background-image: url('/assets/images/right-door.png');
   background-position: left center;
-  // box-shadow: inset 10px 0 30px rgba(0, 0, 0, 0.3);
 
+  /* 
+    ANIMAZIONE APERTURA PORTA DESTRA
+    transform: translateX(101%) sposta la porta completamente fuori a destra
+  */
   @at-root .splash-wrapper.opening & {
     transform: translateX(101%);
   }
 }
 
-// ============================================================================
-// 4. SPLASH LOGO (AL CENTRO - APPARE CON APERTURA PORTE)
-// ============================================================================
+/* ========================================================================== */
+/* 4. SPLASH LOGO (LOGO CENTRALE) */
+/* ========================================================================== */
 
+/* 
+  Logo posizionato al centro assoluto dello schermo
+  Appare gradualmente quando le porte si aprono
+*/
 .splash-logo {
   position: absolute;
+  /* top: 50% e left: 50% posizionano l'angolo in alto a sinistra al centro */
   top: 50%;
   left: 50%;
+  /* transform: translate(-50%, -50%) centra perfettamente l'elemento */
   transform: translate(-50%, -50%);
+  /* z-index: 10 sopra le porte (che hanno z-index: 1) */
   z-index: 10;
   width: 100%;
   max-width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  /* padding: 0 2rem aggiunge spazio laterale per evitare che il logo tocchi i bordi */
   padding: 0 2rem;
 
-  // ✅ LOGO HIDDEN INITIALLY, APPEARS WHEN DOORS OPEN
+  /* 
+    LOGO NASCOSTO INIZIALMENTE
+    opacity: 0 invisibile all'inizio
+    0.4s delay prima che inizi ad apparire (permette alle porte di iniziare ad aprirsi)
+  */
   opacity: 0;
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.4s;
+  /* pointer-events: none impedisce il click sul logo quando invisibile */
   pointer-events: none;
 
-  // ✅ STATE: OPENING - LOGO BECOMES VISIBLE
+  /* 
+    STATO OPENING - LOGO DIVENTA VISIBILE
+    Quando le porte si aprono, il logo appare gradualmente
+  */
   @at-root .splash-wrapper.opening & {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
     pointer-events: auto;
   }
 
-  // ✅ STATE: FADING OUT - LOGO HIDES AGAIN
+  /* 
+    FADE OUT FINALE DEL LOGO
+    Dopo 1.4s (quando le porte sono aperte), il logo inizia a scomparire
+    animation: logoFadeOut fa svanire e rimpicciolire il logo
+  */
   @at-root .splash-wrapper.opening & {
     animation: logoFadeOut 0.5s cubic-bezier(0.4, 0, 0.2, 1) 1.4s forwards;
   }
 }
 
+/* 
+  WRAPPER LOGO CON ANIMAZIONE GALLEGGIAMENTO
+  Fa "galleggiare" il logo con un movimento su/giù
+*/
 .logo-wrapper {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  /* animation: logoFloat movimento continuo su/giù in 3 secondi, loop infinito */
   animation: logoFloat 3s ease-in-out infinite;
 
+  /* 
+    ANIMAZIONE PIÙ BREVE DURANTE L'APERTURA
+    Quando le porte si aprono, passa a un'animazione più breve e veloce
+  */
   @at-root .splash-wrapper.opening & {
     animation: logoFloatShort 0.8s ease-in-out;
   }
 }
 
+/* 
+  IMMAGINE LOGO
+  width: 100% occupa tutto lo spazio disponibile
+  height: auto mantiene le proporzioni originali
+*/
 .logo-image {
   width: 100%;
   height: auto;
-
 }
 
-// ✅ LOGO FLOAT ANIMATION (WHEN DOORS CLOSED)
+/* 
+  KEYFRAME: LOGO FLOAT (PORTE CHIUSE)
+  Movimento continuo su/giù quando l'utente non ha ancora cliccato
+  0% e 100% = posizione iniziale (in basso)
+  50% = si muove 10px verso l'alto
+*/
 @keyframes logoFloat {
   0%, 100% {
     transform: translateY(0);
@@ -178,7 +301,13 @@
   }
 }
 
-// ✅ LOGO FLOAT ANIMATION (WHEN DOORS OPENING - SHORTER)
+/* 
+  KEYFRAME: LOGO FLOAT SHORT (PORTE APERTE)
+  Animazione più breve e con leggero ingrandimento
+  0% = posizione iniziale, leggermente rimpicciolito (scale 0.9)
+  50% = si muove 8px verso l'alto e torna a dimensione normale (scale 1)
+  100% = torna alla posizione iniziale
+*/
 @keyframes logoFloatShort {
   0% {
     transform: translateY(0) scale(0.9);
@@ -191,7 +320,12 @@
   }
 }
 
-// ✅ LOGO FADE OUT ANIMATION
+/* 
+  KEYFRAME: LOGO FADE OUT
+  Fa scomparire il logo gradualmente riducendone anche le dimensioni
+  0% = completamente visibile, dimensione normale
+  100% = invisibile, ridotto all'80% della dimensione (scale 0.8)
+*/
 @keyframes logoFadeOut {
   0% {
     opacity: 1;
@@ -203,42 +337,72 @@
   }
 }
 
+/* ========================================================================== */
+/* 5. INTERACTION HINT (SUGGERIMENTO "TAP TO CONTINUE") */
+/* ========================================================================== */
 
-// ============================================================================
-// 6. INTERACTION HINT (TAP TO CONTINUE)
-// ============================================================================
-
+/* 
+  Contenitore del testo "Tap To Continue"
+  Posizionato in basso al centro dello schermo
+*/
 .interaction-hint {
   position: absolute;
+  /* bottom: 40px distanza dal fondo dello schermo */
   bottom: 40px;
   left: 50%;
+  /* transform: translateX(-50%) centra orizzontalmente */
   transform: translateX(-50%);
   z-index: 5;
   text-align: center;
 
+  /* transition: scompare rapidamente quando .opening viene aggiunto */
   transition: opacity 0.4s ease;
 
+  /* 
+    STATO OPENING - HINT SCOMPARE
+    Quando l'utente clicca, il hint sparisce immediatamente
+  */
   @at-root .splash-wrapper.opening & {
     opacity: 0;
     pointer-events: none;
   }
 
+  /* 
+    RESPONSIVE - SU SCHERMI PICCOLI
+    Riduce la distanza dal fondo su mobile
+  */
   @media (max-width: 480px) {
     bottom: 30px;
   }
 }
 
+/* 
+  TESTO HINT
+  Stile grande e in grassetto per attirare l'attenzione
+*/
 .hint-text {
   font-family: 'Montserrat', sans-serif;
+  /* font-size: 2rem testo molto grande */
   font-size: 2rem;
+  /* font-weight: 1000 = ultra grassetto (massimo) */
   font-weight: 1000;
+  /* color: #1c2954 blu scuro elegante */
   color: #1c2954;
   opacity: 1;
+  /* letter-spacing: 1px spazia leggermente le lettere */
   letter-spacing: 1px;
+  /* text-transform: uppercase tutto maiuscolo */
   text-transform: uppercase;
+  /* animation: fadeInOut pulsa continuamente per attirare l'attenzione */
   animation: fadeInOut 2.5s ease-in-out infinite;
 }
 
+/* 
+  KEYFRAME: FADE IN OUT
+  Fa pulsare il testo tra più scuro e più chiaro
+  0% e 100% = opacità 0.4 (più scuro)
+  50% = opacità 0.9 (più luminoso)
+*/
 @keyframes fadeInOut {
   0%, 100% {
     opacity: 0.4;
@@ -248,18 +412,19 @@
   }
 }
 
-// ============================================================================
-// 7. RESPONSIVE ADJUSTMENTS
-// ============================================================================
+/* ========================================================================== */
+/* 6. ACCESSIBILITÀ */
+/* ========================================================================== */
 
-
-
-// ============================================================================
-// 8. ACCESSIBILITY
-// ============================================================================
-
+/* 
+  SUPPORTO PER UTENTI CON PREFERENZA REDUCED MOTION
+  Alcuni utenti hanno problemi con animazioni (vertigini, nausea)
+  prefers-reduced-motion: reduce è una media query che rileva questa preferenza
+  Disabilita TUTTE le animazioni e transizioni per questi utenti
+*/
 @media (prefers-reduced-motion: reduce) {
   * {
+    /* !important forza l'override di tutte le altre regole */
     animation: none !important;
     transition: none !important;
   }
@@ -273,16 +438,23 @@
   }
 }
 
-// ============================================================================
-// 9. DARK MODE SUPPORT
-// ============================================================================
+/* ========================================================================== */
+/* 7. DARK MODE SUPPORT */
+/* ========================================================================== */
 
+/* 
+  SUPPORTO DARK MODE
+  Rileva se l'utente ha attivato il tema scuro nel sistema operativo
+  Inverte il gradiente dello sfondo per un effetto coerente
+*/
 @media (prefers-color-scheme: dark) {
   .splash-wrapper {
+    /* Inverte il gradiente: inizia più scuro e finisce più chiaro */
     background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%);
   }
 
   .logo-image {
+    /* filter: drop-shadow aggiunge un'ombra dorata attorno al logo per farlo risaltare */
     filter: drop-shadow(0 12px 32px rgba(212, 175, 55, 0.4));
   }
 }

@@ -1,99 +1,313 @@
-<!-- menu.html -->
-<app-splash-screen 
-  *ngIf="isSplashing" 
-  (animationFinished)="onSplashFinished()">
-</app-splash-screen>
+<!-- 
+  COMPONENTE MENU PRINCIPALE
+  Questo template visualizza il menu del ristorante "Spritzeria Barberini"
+  Gestisce: splash screen, caricamento dati, lingue multiple, categorie, articoli, allergeni
+-->
 
-<div class="menu-wrapper" *ngIf="publicData$ | async as data">
-  <div class="logo-container">
-    <img src="assets/images/logo.png" alt="Spritzeria Barberini Logo" class="logo-image">
-  </div>
-  <app-language-switcher></app-language-switcher>
+<!-- 
+  1. SPLASH SCREEN
+  Visualizza un'animazione di caricamento iniziale quando isSplashing è true
+  Quando l'animazione finisce, chiama onSplashFinished() per nascondere la splash
+-->
+@if (isSplashing) {
+  <app-splash-screen
+    (animationFinished)="onSplashFinished()">
+  </app-splash-screen>
+}
 
-  <div class="welcome-section">
-    <div class="welcome-text">
-      <p>{{ 'ui.welcome_p1' | translate }}</p>
-      <p>{{ 'ui.welcome_p2' | translate }}</p>
-      <span class="welcome-brand">Spritzeria Barberini</span>
+<!-- 
+  2. CARICAMENTO DATI PRINCIPALE
+  publicData$ è un Observable che contiene tutti i dati del menu
+  Il pipe 'async' si sottoscrive automaticamente ai dati
+  'as data' assegna i dati ricevuti alla variabile locale 'data'
+  Il blocco @if verifica che i dati siano stati ricevuti prima di renderizzare
+-->
+@if (publicData$ | async; as data) {
+  <!-- 
+    3. CONTENITORE PRINCIPALE DEL MENU
+    Racchiude tutto il contenuto del menu con gli stili della classe 'menu-wrapper'
+  -->
+  <div class="menu-wrapper">
+    
+    <!-- 
+      4. SEZIONE LOGO
+      Visualizza il logo dell'azienda
+      L'attributo 'alt' è importante per l'accessibilità (lettori di schermo)
+    -->
+    <div class="logo-container">
+      <img src="assets/images/logo.png" alt="Spritzeria Barberini Logo" class="logo-image">
     </div>
-  </div>
 
-  <!-- ✅ Usa il metodo helper getLocalizedText -->
-  <div *ngFor="let category of data.categories || []; trackBy: trackByCategoryId" class="category-section">
-    
-    <h2 class="category-title">{{ getLocalizedText(category.name, 'Categoria') }}</h2>
-    
-    <div *ngFor="let item of category.items || []; trackBy: trackByItemId" class="menu-item">
-      
-      <div class="item-header">
-        <span class="item-name">{{ getLocalizedText(item.name, 'Articolo') }}</span>
-        @if(!item.disponibile) {
-          <span class="item-price">Non Disponibile</span>
-        }
-        @else {
-          <span class="item-price">{{ item.price | currency:'EUR' }}</span>
-        }
+    <!-- 
+      5. COMPONENTE CAMBIO LINGUA
+      <app-language-switcher> è un componente figlio che permette di cambiare la lingua
+      Quando l'utente cambia lingua, getLocalizedText() estrae il testo nella nuova lingua
+    -->
+    <app-language-switcher></app-language-switcher>
+
+    <!-- 
+      6. SEZIONE DI BENVENUTO
+      Mostra il messaggio di benvenuto personalizzato
+      I pipe 'translate' collegano le stringhe ai file di traduzione i18n
+      ui.welcome_p1 e ui.welcome_p2 sono chiavi nei file di traduzione (es: en.json, it.json)
+    -->
+    <div class="welcome-section">
+      <div class="welcome-text">
+        <!-- Primo paragrafo di benvenuto tradotto -->
+        <p>{{ 'ui.welcome_p1' | translate }}</p>
+        <!-- Secondo paragrafo di benvenuto tradotto -->
+        <p>{{ 'ui.welcome_p2' | translate }}</p>
+        <!-- Nome del brand in stile particolare -->
+        <span class="welcome-brand">Spritzeria Barberini</span>
       </div>
-      
-      <!-- ✅ Usa il metodo helper -->
-      <p class="item-description" *ngIf="getLocalizedText(item.description)">
-        {{ getLocalizedText(item.description) }}
-      </p>
+    </div>
 
-      <!-- ✅ Usa il metodo helper -->
-      <p class="item-ingredients" *ngIf="getLocalizedText(item.ingredients)">
-        <span class="ingredients-label">{{ 'ui.ingredients_label' | translate }}:</span>
-        {{ getLocalizedText(item.ingredients) }}
-      </p>
-
-      <div class="item-info">
-        <span *ngIf="item.frozen" class="frozen-item">*{{ 'ui.frozen' | translate }}</span>
+    <!-- 
+      7. CICLO PRINCIPALE - CATEGORIE
+      @for itera su tutte le categorie del menu (es: Aperitivi, Piatti Principali, Dolci)
+      data.categories || [] usa un array vuoto come fallback se non ci sono categorie
+      track trackByCategoryId() migliora le prestazioni identificando univocamente ogni categoria
+      Questo evita di re-renderizzare elementi identici quando Angular aggiorna la lista
+      $index è l'indice numerico della categoria nella lista (0, 1, 2, ...)
+    -->
+    @for (category of data.categories || []; track trackByCategoryId($index, category)) {
+      <!-- 
+        8. CONTENITORE CATEGORIA
+        Ogni categoria ha un titolo e una lista di articoli
+      -->
+      <div class="category-section">
         
-        <span *ngIf="item.allergens && item.allergens.length > 0">
-          {{ 'ui.allergens_label' | translate }}: 
-          {{ getAllergenNumbers(item.allergens) }} 
-        </span>
-      </div>
+        <!-- 
+          9. TITOLO CATEGORIA
+          getLocalizedText(category.name, 'Categoria') estrae il nome della categoria nella lingua corrente
+          Il secondo parametro 'Categoria' è il fallback se il testo localizzato non esiste
+          getLocalizedText() controlla quale lingua è attiva e ritorna il testo corrispondente
+        -->
+        <h2 class="category-title">{{ getLocalizedText(category.name, 'Categoria') }}</h2>
 
+        <!-- 
+          10. CICLO ANNIDATO - ARTICOLI
+          Per ogni categoria, itera su tutti gli articoli (es: spritz, prosecco, vino)
+          category.items || [] usa un array vuoto come fallback se la categoria ha 0 articoli
+          track trackByItemId() identifica univocamente ogni articolo per le prestazioni
+        -->
+        @for (item of category.items || []; track trackByItemId($index, item)) {
+          <!-- 
+            11. CONTENITORE ARTICOLO
+            Racchiude tutte le informazioni di un singolo articolo del menu
+          -->
+          <div class="menu-item">
+
+            <!-- 
+              12. INTESTAZIONE ARTICOLO
+              Contiene il nome dell'articolo e il prezzo/disponibilità
+            -->
+            <div class="item-header">
+              <!-- 
+                13. NOME ARTICOLO
+                Visualizzato nella lingua selezionata tramite getLocalizedText()
+              -->
+              <span class="item-name">{{ getLocalizedText(item.name, 'Articolo') }}</span>
+
+              <!-- 
+                14. PREZZO O STATO "NON DISPONIBILE"
+                Logica condizionale: 
+                - Se !item.disponibile è true (articolo non disponibile), mostra "Non Disponibile"
+                - Altrimenti (@else), mostra il prezzo
+                - Il pipe 'currency' formatta il numero come valuta EUR (es: €5,00)
+              -->
+              @if(!item.disponibile) {
+                <!-- Articolo non disponibile -->
+                <span class="item-price">Non Disponibile</span>
+              }
+              @else {
+                <!-- Articolo disponibile - mostra il prezzo in EUR -->
+                <span class="item-price">{{ item.price | currency:'EUR' }}</span>
+              }
+            </div>
+
+            <!-- 
+              15. DESCRIZIONE ARTICOLO
+              Visualizzata solo se esiste (@if controlla se il testo ritornato non è vuoto)
+              Se getLocalizedText() ritorna una stringa vuota, il blocco non viene renderizzato
+              Questo evita di mostrare paragrafi vuoti nel template
+            -->
+            @if (getLocalizedText(item.description)) {
+              <p class="item-description">
+                {{ getLocalizedText(item.description) }}
+              </p>
+            }
+
+            <!-- 
+              16. INGREDIENTI
+              Mostra la lista degli ingredienti solo se disponibile
+              L'etichetta 'ui.ingredients_label' viene tradotta (es: "Ingredienti:" in italiano)
+            -->
+            @if (getLocalizedText(item.ingredients)) {
+              <p class="item-ingredients">
+                <!-- Etichetta tradotta per "Ingredienti:" -->
+                <span class="ingredients-label">{{ 'ui.ingredients_label' | translate }}:</span>
+                <!-- Lista degli ingredienti nella lingua selezionata -->
+                {{ getLocalizedText(item.ingredients) }}
+              </p>
+            }
+
+            <!-- 
+              17. INFORMAZIONI AGGIUNTIVE
+              Contiene flag per articoli congelati e allergeni
+            -->
+            <div class="item-info">
+              <!-- 
+                18. INDICATORE ARTICOLO CONGELATO
+                Se item.frozen è true, mostra un'etichetta con asterisco
+                L'asterisco di solito rimanda a una nota legale/legenda (es: "contiene glutine")
+              -->
+              @if (item.frozen) {
+                <span class="frozen-item">*{{ 'ui.frozen' | translate }}</span>
+              }
+
+              <!-- 
+                19. LISTA ALLERGENI
+                Se l'articolo ha allergeni, visualizza l'etichetta tradotta + numeri allergeni
+                item.allergens è un array di oggetti allergia (es: [{number: 1}, {number: 3}])
+                allergens.length > 0 controlla se l'array ha almeno un elemento
+                getAllergenNumbers() converte l'array in una stringa formattata (es: "1, 3, 7")
+              -->
+              @if (item.allergens && item.allergens.length > 0) {
+                <span>
+                  <!-- Etichetta tradotta per "Allergeni:" -->
+                  {{ 'ui.allergens_label' | translate }}:
+                  <!-- Numeri degli allergeni formattati -->
+                  {{ getAllergenNumbers(item.allergens) }}
+                </span>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- 
+      20. LEGENDA ALLERGENI
+      Sezione che spiega cosa significano i numeri degli allergeni
+      Mostrata solo se l'array data.allergens contiene elementi
+      Importante per l'accessibilità e la sicurezza (allergeni alimentari)
+    -->
+    @if (data.allergens && data.allergens.length > 0) {
+      <div class="allergen-legend">
+        <!-- Titolo della legenda tradotto (es: "Allergeni" o "Información de Alérgenos") -->
+        <h3 class="legend-title">{{ 'ui.allergens_title' | translate }}</h3>
+        
+        <!-- Lista degli allergeni -->
+        <ul class="legend-list">
+          <!-- 
+            21. CICLO ALLERGENI
+            Itera su tutti gli allergeni disponibili nel database
+            track trackByAllergenId() identifica univocamente ogni allergene
+          -->
+          @for (allergen of data.allergens; track trackByAllergenId($index, allergen)) {
+            <!-- 
+              22. ELEMENTO LEGENDA ALLERGENE
+              Mostra il numero e il nome dell'allergene
+              Esempio: "1 - Glutine"
+            -->
+            <li class="legend-item">
+              <!-- Numero identificativo dell'allergene -->
+              <span class="allergen-number">{{ allergen.number }}</span>
+              <!-- Nome dell'allergene nella lingua corrente -->
+              <span class="allergen-name">{{ getLocalizedText(allergen.name, 'Allergene') }}</span>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+
+    <!-- 
+      23. FOOTER CON SOCIAL MEDIA
+      Contiene i link ai profili social del ristorante
+      Importante per il marketing e l'engagement con i clienti
+    -->
+    <footer class="footer-social">
+      <!-- 
+        24. LINK INSTAGRAM
+        target="_blank" apre il link in una nuova scheda del browser
+        rel="noopener noreferrer" aumenta la sicurezza prevenendo accessi non autorizzati
+        aria-label migliora l'accessibilità per i lettori di schermo
+        <fa-icon> è un componente FontAwesome che renderizza l'icona Instagram
+      -->
+      <a href="https://www.instagram.com/spritzeriabarberini" 
+         target="_blank" 
+         rel="noopener noreferrer" 
+         aria-label="Instagram">
+        <fa-icon [icon]="faInstagram"></fa-icon>
+      </a>
+
+      <!-- 
+        25. LINK TWITTER
+        Stesso pattern del link Instagram
+      -->
+      <a href="https://twitter.com/HotelBarberini" 
+         target="_blank" 
+         rel="noopener noreferrer" 
+         aria-label="Twitter">
+        <fa-icon [icon]="faTwitter"></fa-icon>
+      </a>
+
+      <!-- 
+        26. LINK FACEBOOK
+        Stesso pattern dei link precedenti
+      -->
+      <a href="https://www.facebook.com/hotelbarberiniRoma" 
+         target="_blank" 
+         rel="noopener noreferrer" 
+         aria-label="Facebook">
+        <fa-icon [icon]="faFacebook"></fa-icon>
+      </a>
+    </footer>
+
+    <!-- 
+      27. CREDITI SVILUPPATORE
+      Link al portfolio dello sviluppatore
+      Utile per il branding e la credibilità del progetto
+    -->
+    <div class="developer-credit">
+      Sviluppato da
+      <a href="https://www.macwelltubale.it" 
+         target="_blank" 
+         rel="noopener noreferrer">
+        Macwell Tubale
+      </a>
     </div>
   </div>
+}
 
-  <!-- ✅ Usa il metodo helper -->
-  <div class="allergen-legend" *ngIf="data.allergens && data.allergens.length > 0">
-    
-    <h3 class="legend-title">{{ 'ui.allergens_title' | translate }}</h3>
-    
-    <ul class="legend-list">
-      <li *ngFor="let allergen of data.allergens; trackBy: trackByAllergenId" class="legend-item">
-        <span class="allergen-number">{{ allergen.number }}</span>
-        <span class="allergen-name">{{ getLocalizedText(allergen.name, 'Allergene') }}</span>
-      </li>
-    </ul>
-  </div>
-
-  <footer class="footer-social">
-    <a href="https://www.instagram.com/spritzeriabarberini" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-      <fa-icon [icon]="faInstagram"></fa-icon>
-    </a>
-    <a href="https://twitter.com/HotelBarberini" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
-      <fa-icon [icon]="faTwitter"></fa-icon>
-    </a>
-    <a href="https://www.facebook.com/hotelbarberiniRoma" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-      <fa-icon [icon]="faFacebook"></fa-icon>
-    </a>
-  </footer>
-
-  <div class="developer-credit">
-    Sviluppato da 
-    <a href="https://www.macwelltubale.it" target="_blank" rel="noopener noreferrer">
-      Macwell Tubale
-    </a>
-  </div>
-</div>
-
-<button (click)="scrollToTop()" 
-        class="scroll-to-top" 
-        [class.show]="showScrollButton"
-        aria-label="Torna su">
+<!-- 
+  28. PULSANTE SCROLL TO TOP
+  Pulsante per tornare all'inizio della pagina quando l'utente ha scrollato
+  Utile per la navigazione su pagine lunghe e mobile
+  Posizionato fuori dal blocco @if perché deve essere sempre disponibile
+-->
+<button 
+  (click)="scrollToTop()"
+  class="scroll-to-top"
+  [class.show]="showScrollButton"
+  aria-label="Torna su">
+  <!-- 
+    29. ICONA FRECCIA SU
+    L'icona FontAwesome mostra una freccia verso l'alto
+  -->
   <fa-icon [icon]="faArrowUp"></fa-icon>
 </button>
+
+<!-- 
+  SPIEGAZIONE FUNZIONAMENTO COMPLESSIVO:
+  
+  1. CARICAMENTO: Quando il componente si inizializza, mostra la splash screen
+  2. DATI: Carica i dati del menu tramite l'Observable publicData$
+  3. LINGUA: L'utente può cambiar lingua tramite app-language-switcher
+  4. RENDERING: Quando i dati arrivano, renderizza le categorie e gli articoli
+  5. LOCALIZZAZIONE: Tutti i testi vengono estratti nella lingua corrente tramite getLocalizedText()
+  6. ACCESSIBILITÀ: Attributi aria-label e alt migliorano l'esperienza per utenti con disabilità
+  7. PERFORMANCE: Le funzioni track nei cicli @for ottimizzano il rendering
+  8. SICUREZZA: rel="noopener noreferrer" protegge i link aperti in nuove schede
+-->

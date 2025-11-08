@@ -1,7 +1,101 @@
+<!--CCOMPONENTE LANGUAGE SWITCHER
+Permette all'utente di cambiare la lingua dell'applicazione
+Mostra link per ogni lingua supportata con evidenziazione della lingua attiva
+-->
+
+<!--
+CONTENITORE LANGUAGE SWITCHER
+Flex container che allinea i link linguistici orizzontalmente
+-->
 <div class="lang-switcher">
-  <a *ngFor="let lang of translate.getLangs()"
-     (click)="useLanguage(lang)"
-     [class.active]="translate.currentLang === lang">
-    {{ lang | uppercase }}
-  </a>
+  <!--
+  CICLO *ngFor - ITERA SU TUTTE LE LINGUE
+  *ngFor="let lang of translate.getLangs()"
+
+  translate.getLangs() = metodo che ritorna l'array di lingue supportate
+  Nel nostro caso: ['it', 'en', 'fr']
+
+  let lang = variabile locale che contiene ogni lingua nella loop
+  Ad ogni iterazione, lang avrà il valore di una lingua diversa:
+  - Iterazione 1: lang = 'it'
+  - Iterazione 2: lang = 'en'
+  - Iterazione 3: lang = 'fr'
+
+  Risultato: 3 link <a> verranno renderizzati, uno per lingua
+  -->
+  @for (lang of translate.getLangs(); track lang) {
+    <a
+      (click)="useLanguage(lang)"
+      [class.active]="translate.currentLang === lang">
+      <!--
+      (click)="useLanguage(lang)"
+      Event binding - quando l'utente clicca il link:
+      Chiama il metodo useLanguage(lang) nel componente TypeScript
+      Passa la lingua corrente della loop come parametro
+      useLanguage() cambierà la lingua tramite TranslateService
+      -->
+      <!--
+      [class.active]="translate.currentLang === lang"
+      Property binding - binding condizionale della classe CSS
+      Logica:
+      - Se translate.currentLang === lang → aggiungi classe 'active'
+      - Se translate.currentLang !== lang → non aggiungere la classe
+      Esempi:
+      Se currentLang è 'it':
+      - Link 'it': [class.active] = true → <a class="active">IT</a>
+      - Link 'en': [class.active] = false → <a>EN</a>
+      - Link 'fr': [class.active] = false → <a>FR</a>
+      La classe 'active' applica stili speciali (oro, bold, opacità 1)
+      Così l'utente vede quale lingua è attualmente selezionata
+      -->
+      <!--
+      {{ lang | uppercase }}
+      Interpolation - mostra il valore della variabile
+      lang = il valore della lingua ('it', 'en', 'fr')
+      | uppercase = pipe Angular che converte in maiuscolo
+      Risultato renderizzato:
+      {{ 'it' | uppercase }} → IT
+      {{ 'en' | uppercase }} → EN
+      {{ 'fr' | uppercase }} → FR
+      Perché maiuscolo? Aspetto più elegante e professionale
+      -->
+      {{ lang | uppercase }}
+    </a>
+  }
 </div>
+
+<!--
+FLUSSO DI INTERAZIONE:
+
+1. CARICAMENTO INIZIALE
+- translate.getLangs() ritorna ['it', 'en', 'fr']
+- Tre link vengono renderizzati: IT, EN, FR
+- translate.currentLang = 'it' (default)
+- Link IT ha classe 'active', EN e FR no
+
+2. UTENTE CLICCA LINK 'EN'
+- Evento (click)="useLanguage('en')" si attiva
+- useLanguage('en') viene eseguito
+- TranslateService.use('en') viene chiamato
+
+3. CAMBIO LINGUA
+- translate.currentLang cambia a 'en'
+- Evento onLangChange viene emesso da ngx-translate
+- Menu component ascolta questo evento e reagisce
+
+4. AGGIORNAMENTO TEMPLATE
+- [class.active]="translate.currentLang === lang" si rivaluta
+- Link 'en' ora ha classe 'active'
+- Link 'it' perde la classe 'active'
+- L'UI si aggiorna visivamente
+
+5. CONTENUTO AGGIORNATO
+- Menu component riceve l'evento onLangChange
+- Aggiorna currentLang a 'en'
+- getLocalizedText() estrae i testi in inglese
+- All'utente viene mostrato il menu in inglese
+  - getLocalizedText() estrae i testi in inglese
+     - All'utente viene mostrato il menu in inglese
+  - getLocalizedText() estrae i testi in inglese
+     - All'utente viene mostrato il menu in inglese
+-->

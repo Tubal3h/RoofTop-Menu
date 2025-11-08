@@ -1,73 +1,145 @@
+/* 
+  FOGLIO DI STILE PER IL COMPONENTE MENU
+  Gestisce il layout, i colori, le animazioni e l'accessibilità del menu
+  Usa variabili CSS personalizzate (--color-primary, --font-headings, ecc.)
+*/
 
-
+/* === CONTENITORE PRINCIPALE === */
 .menu-wrapper {
-  max-width: 600px; /* Ideale per mobile */
+  /* max-width: 600px limita la larghezza massima per una visualizzazione ottimale su mobile */
+  max-width: 600px;
+  /* margin: auto centra il contenitore orizzontalmente */
   margin: auto;
+  /* padding aggiunge spazio interno da tutti i lati */
   padding: 1rem;
-  /* Animazione fade-in per quando appare */
+  /* animation: fadeIn anima l'apparizione del menu con uno sfade graduale */
   animation: fadeIn 0.5s ease-in-out;
 }
 
+/* 
+  ANIMAZIONE FADE-IN
+  Fa apparire il menu gradualmente quando il componente si carica
+  from: opacità 0 (invisibile) → to: opacità 1 (completamente visibile)
+  Durata: 0.5 secondi con velocità ease-in-out (lenta all'inizio e fine, veloce nel mezzo)
+*/
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-/* === Stile Logo === */
+/* === STILE LOGO === */
+/* 
+  Contenitore del logo centrato e con spazio verticale
+*/
 .logo-container {
+  /* text-align: center centra il logo orizzontalmente */
   text-align: center;
+  /* padding: 1.5rem 0 1rem 0 aggiunge spazio sopra (1.5rem) e sotto (1rem) */
   padding: 1.5rem 0 1rem 0;
 }
 
+/* 
+  Stile dell'immagine logo
+  Si adatta responsivamente alla dimensione dello schermo
+*/
 .logo-image {
+  /* width: 100% occupa tutto lo spazio disponibile */
   width: 100%;
-  max-width: 350px; // Adatta la dimensione del tuo logo
+  /* max-width: 350px limita la dimensione massima del logo */
+  max-width: 350px;
+  /* height: auto mantiene le proporzioni dell'immagine */
   height: auto;
 }
 
-/* === Stili per il blocco Benvenuto === */
+/* === STILI SEZIONE BENVENUTO === */
+/* 
+  Contenitore della sezione di benvenuto con bordo inferiore
+*/
 .welcome-section {
+  /* margin: 1rem 0 3rem 0 = spazio superiore 1rem, inferiore 3rem */
   margin: 1rem 0 3rem 0;
+  /* border-bottom: 1px solid crea una linea di separazione */
   border-bottom: 1px solid var(--color-border);
+  /* padding-bottom aggiunge spazio interno sotto il testo */
   padding-bottom: 2rem;
 }
 
-/* Contenitore per dare la forma all'immagine */
+/* 
+  Contenitore per dare una forma arrotondata all'immagine di benvenuto
+  Crea una forma moderna con angoli inferiori molto arrotondati
+*/
 .image-container {
-  border-radius: 15px 15px 70px 70px; // Arrotonda solo gli angoli inferiori
-  overflow: hidden; // Taglia l'immagine alla forma
+  /* border-radius: 15px 15px 70px 70px arrotonda gli angoli:
+     - 15px in alto a sinistra
+     - 15px in alto a destra
+     - 70px in basso a destra
+     - 70px in basso a sinistra (molto arrotondato) */
+  border-radius: 15px 15px 70px 70px;
+  /* overflow: hidden taglia l'immagine alla forma specificata dai border-radius */
+  overflow: hidden;
+  /* box-shadow: aggiunge un'ombra elegante attorno all'immagine
+     rgba(0, 0, 0, 0.4) = nero trasparente al 40% */
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-  margin-bottom: 2rem; // Spazio sotto l'immagine
+  /* margin-bottom aggiunge spazio sotto l'immagine */
+  margin-bottom: 2rem;
 }
 
+/* 
+  Immagine di benvenuto
+  display: block rimuove gli spazi bianchi indesiderati sotto l'immagine (inline per default)
+*/
 .welcome-image {
   width: 100%;
   height: auto;
-  display: block; // Rimuove spazi bianchi indesiderati
+  display: block;
 }
 
+/* 
+  Stile del testo di benvenuto
+  Font leggero e centrato per un aspetto elegante
+*/
 .welcome-text {
+  /* font-family usa la variabile CSS per il font principale */
   font-family: var(--font-primary);
+  /* font-weight: 300 = carattere sottile/leggero */
   font-weight: 300;
   font-size: 0.95rem;
+  /* line-height: 1.6 aumenta la spaziatura tra le righe per leggibilità */
   line-height: 1.6;
+  /* opacity: 0.9 rende il testo leggermente trasparente */
   opacity: 0.9;
   text-align: center;
 
   p {
+    /* Spazio tra i paragrafi */
     margin-bottom: 1rem;
   }
 }
 
+/* 
+  Nome del brand (Spritzeria Barberini)
+  Stile particolare per far risaltare il nome
+*/
 .welcome-brand {
-  font-family: var(--font-headings); // Usa il font dei titoli
+  /* font-family: var(--font-headings) usa il font per i titoli */
+  font-family: var(--font-headings);
   font-size: 1.2rem;
-  color: var(--color-primary); // Colore oro
+  /* color: var(--color-primary) usa il colore principale (solitamente oro) */
+  color: var(--color-primary);
   margin-top: 1rem;
+  /* display: block fa andare il brand a capo come un blocco */
   display: block;
 }
 
-/* === Stili Sezioni Menu === */
+/* === STILI SEZIONI MENU === */
+/* 
+  Titolo delle categorie (Aperitivi, Piatti Principali, Dolci, ecc.)
+  Grande e prominente con bordo inferiore
+*/
 .category-title {
   font-family: var(--font-headings);
   color: var(--color-primary);
@@ -76,95 +148,149 @@
   text-align: center;
   border-bottom: 1px solid var(--color-border);
   padding-bottom: 1rem;
+  /* margin: 2.5rem 0 2rem 0 = spazio ampio sopra e sotto */
   margin: 2.5rem 0 2rem 0;
 }
 
+/* 
+  Stile di ogni articolo del menu
+  Contenitore con bordo inferiore per separare gli articoli
+*/
 .menu-item {
   margin-bottom: 1.5rem;
   padding-bottom: 1.5rem;
-  
-  /* Bordo più elegante (solido e leggero) */
+  /* border-bottom: 1px solid rgba(255, 255, 255, 0.15) crea una linea sottile e trasparente */
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 
+  /* Pseudo-classe :last-child nasconde il bordo inferiore dell'ultimo articolo */
   &:last-child {
     border-bottom: none;
   }
 
-  /* Effetto hover/active per interattività */
+  /* 
+    Effetto hover/active per interattività
+    Quando l'utente passa il mouse o clicca, il nome dell'articolo cambia colore
+  */
   &:active .item-name,
   &:hover .item-name {
     color: var(--color-primary);
   }
 
-    &.unavailable {
+  /* 
+    Classe .unavailable per articoli non disponibili
+    opacity: 0.5 rende l'articolo più scuro/trasparente
+    pointer-events: none disabilita i click sull'articolo
+  */
+  &.unavailable {
     opacity: 0.5;
     pointer-events: none;
   }
 }
 
+/* 
+  Intestazione dell'articolo (nome + prezzo)
+  display: flex allinea il nome e il prezzo su una stessa riga
+*/
 .item-header {
   display: flex;
+  /* justify-content: space-between mette il nome a sinistra e il prezzo a destra */
   justify-content: space-between;
+  /* align-items: baseline allinea verticalmente il testo per una riga pulita */
   align-items: baseline;
+  /* gap: 1rem spazio tra nome e prezzo */
   gap: 1rem;
 }
 
+/* 
+  Nome dell'articolo
+  Grande e in grassetto con effetto transizione di colore al hover
+*/
 .item-name {
   font-size: 1.1rem;
   font-weight: 600;
   color: #ffffff;
-  transition: color 0.2s ease-in-out; /* Per l'effetto hover */
+  /* transition: color 0.2s ease-in-out anima il cambio di colore al hover */
+  transition: color 0.2s ease-in-out;
 }
 
+/* 
+  Prezzo dell'articolo o "Non Disponibile"
+  Colore principale (oro) per far risaltare il prezzo
+*/
 .item-price {
   font-size: 1.1rem;
   font-weight: 600;
   color: var(--color-primary);
-  flex-shrink: 0; /* Non fa andare a capo il prezzo */
+  /* flex-shrink: 0 impedisce al prezzo di essere compresso/ridotto di dimensione */
+  flex-shrink: 0;
 }
 
+/* 
+  Descrizione dell'articolo
+  Testo più piccolo e italico per distinguerlo dal nome
+*/
 .item-description {
   font-size: 0.9rem;
   font-weight: 300;
   margin-top: 0.5rem;
   opacity: 0.8;
+  /* font-style: italic rende il testo inclinato */
   font-style: italic;
 }
 
+/* 
+  Sezione ingredienti
+  Mostra la lista degli ingredienti sotto il nome e la descrizione
+*/
 .item-ingredients {
   font-size: 0.9rem;
   font-weight: 300;
   margin-top: 0.75rem;
   opacity: 0.9;
-  
+
+  /* Etichetta "Ingredienti:" più grande e in grassetto */
   .ingredients-label {
-    font-weight: 600; // Grassetto
+    font-weight: 600;
     opacity: 1;
     color: var(--color-text);
   }
 }
 
+/* 
+  Contenitore per informazioni aggiuntive (allergeni, articoli congelati)
+  display: flex allinea gli elementi su una riga con space-between
+*/
 .item-info {
   font-size: 0.8rem;
   opacity: 0.6;
-  margin-top: 1rem; // Aumenta lo spazio
+  margin-top: 1rem;
   display: flex;
-  justify-content: space-between; // Allinea allergeni e surgelato
+  /* justify-content: space-between mette gli allergeni a sinistra e il surgelato a destra */
+  justify-content: space-between;
   width: 100%;
-  
+
+  /* Indicatore per articoli congelati */
   .frozen-item {
     font-weight: bold;
     color: var(--color-primary);
   }
 }
 
-/* === Stili per la Legenda Allergeni === */
+/* === STILI LEGENDA ALLERGENI === */
+/* 
+  Sezione legenda con border superiore e spazio ampio
+  Importante per la sicurezza alimentare degli utenti
+*/
 .allergen-legend {
   margin-top: 4rem;
   padding-top: 2rem;
   border-top: 1px solid var(--color-border);
 }
 
+/* 
+  Titolo della legenda allergeni
+  Grande, in grassetto e centrato
+*/
 .legend-title {
   font-family: var(--font-headings);
   color: var(--color-primary);
@@ -174,18 +300,30 @@
   margin-bottom: 2rem;
 }
 
+/* 
+  Lista degli allergeni in formato colonne
+  column-count: 2 su schermi larghi, 1 su mobile
+*/
 .legend-list {
+  /* list-style: none rimuove i pallini della lista */
   list-style: none;
   padding: 0;
   margin: 0;
-  column-count: 2; // Mostra su 2 colonne su schermi larghi
+  /* column-count: 2 divide la lista in 2 colonne */
+  column-count: 2;
+  /* column-gap: 2rem spazio tra le colonne */
   column-gap: 2rem;
-  
+
+  /* Media query: su schermi più piccoli di 600px, torna a 1 colonna */
   @media (max-width: 600px) {
-    column-count: 1; // Colonna singola su mobile
+    column-count: 1;
   }
 }
 
+/* 
+  Elemento della lista allergeni
+  display: flex allinea il numero e il nome
+*/
 .legend-item {
   display: flex;
   align-items: center;
@@ -193,44 +331,65 @@
   font-size: 0.85rem;
   font-weight: 300;
   opacity: 0.8;
-  // Evita che gli item si spezzino tra le colonne
-  break-inside: avoid; 
+  /* break-inside: avoid impedisce che un elemento si spezzi tra le colonne */
+  break-inside: avoid;
 }
 
+/* 
+  Numero dell'allergene (1, 2, 3, ecc.)
+  In grassetto, colore primario e con larghezza minima per l'allineamento
+*/
 .allergen-number {
   font-weight: 700;
   color: var(--color-primary);
   font-size: 1rem;
   margin-right: 0.75rem;
-  min-width: 20px; // Allinea i numeri
+  /* min-width: 20px assicura che tutti i numeri occupino lo stesso spazio */
+  min-width: 20px;
+  /* text-align: right allinea il numero a destra */
   text-align: right;
 }
 
-/* === Stile Footer Social === */
+/* === STILE FOOTER SOCIAL === */
+/* 
+  Sezione footer con link ai social media
+  Centrata e con spazio ampio tra le icone
+*/
 .footer-social {
   text-align: center;
+  /* padding: 3rem 0 2rem 0 = spazio verticale ampio */
   padding: 3rem 0 2rem 0;
   margin-top: 3rem;
   border-top: 1px solid var(--color-border);
   display: flex;
+  /* justify-content: center centra le icone */
   justify-content: center;
-  gap: 2.5rem; // Spazio tra le icone
+  /* gap: 2.5rem spazio ampio tra le icone */
+  gap: 2.5rem;
 
+  /* Stile dei link social */
   a {
-    font-size: 2.2rem; // Dimensione icone
+    font-size: 2.2rem;
     color: var(--color-text);
     opacity: 0.6;
+    /* transition: all 0.3s ease anima tutti i cambiamenti di proprietà */
     transition: all 0.3s ease;
 
+    /* Effetto hover: icona più luminosa, colore primario e ingrandita */
     &:hover {
       opacity: 1;
-      color: var(--color-primary); // Oro al passaggio del mouse
+      color: var(--color-primary);
+      /* transform: scale(1.1) ingrandisce l'icona del 10% */
       transform: scale(1.1);
     }
   }
 }
 
-/* === Stile Developer Credit (NUOVO) === */
+/* === STILE CREDITI SVILUPPATORE === */
+/* 
+  Testo piccolo e semi-trasparente con link allo sviluppatore
+  Situato in fondo alla pagina sotto il footer social
+*/
 .developer-credit {
   font-size: 0.85rem;
   font-weight: 300;
@@ -238,13 +397,16 @@
   margin-top: 2rem;
   color: var(--color-text);
 
+  /* Stile del link al portfolio dello sviluppatore */
   a {
-    font-size: 0.85rem; // Resetta la dimensione
+    font-size: 0.85rem;
     font-weight: 600;
     color: var(--color-primary);
+    /* text-decoration: none rimuove la sottolineatura dal link */
     text-decoration: none;
     opacity: 0.8;
 
+    /* Effetto hover sul link */
     &:hover {
       opacity: 1;
       color: var(--color-primary);
@@ -253,38 +415,64 @@
   }
 }
 
-/* === Stile Tasto Scroll-su (NUOVO) === */
+/* === STILE PULSANTE SCROLL TO TOP === */
+/* 
+  Pulsante rotondo per tornare all'inizio della pagina
+  Appare solo quando l'utente ha scrollato verso il basso
+  Position: fixed lo mantiene fisso nell'angolo inferiore destro
+*/
 .scroll-to-top {
+  /* position: fixed mantiene il pulsante fisso nella viewport */
   position: fixed;
+  /* bottom: 20px distanza dal basso dello schermo */
   bottom: 20px;
+  /* right: 20px distanza dal margine destro dello schermo */
   right: 20px;
+  /* z-index: 1000 assicura che il pulsante sia sopra altri elementi */
   z-index: 1000;
 
-  /* Stile bottone */
-  background-color: var(--color-primary); // Oro
-  color: var(--color-background); // Testo nero/scuro
+  /* === STILE DEL BOTTONE === */
+  /* background-color: var(--color-primary) colore oro di sfondo */
+  background-color: var(--color-primary);
+  /* color: var(--color-background) colore del testo (nero/scuro) */
+  color: var(--color-background);
+  /* border: none rimuove il bordo predefinito del bottone */
   border: none;
   width: 45px;
   height: 45px;
-  border-radius: 50%; // Rotondo
+  /* border-radius: 50% rende il bottone perfettamente rotondo (cerchio) */
+  border-radius: 50%;
   font-size: 1.2rem;
+  /* cursor: pointer cambia il cursore in mano al passaggio */
   cursor: pointer;
+  /* box-shadow: aggiunge un'ombra per profondità */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 
-  /* Animazione Entrata/Uscita */
+  /* === ANIMAZIONE ENTRATA/USCITA === */
+  /* opacity: 0 il bottone è invisibile all'inizio */
   opacity: 0;
+  /* transform: translateY(20px) il bottone parte 20px più in basso */
   transform: translateY(20px);
+  /* pointer-events: none impedisce al bottone di essere cliccato quando nascosto */
   pointer-events: none;
+  /* transition: all 0.3s ease-out anima l'apparizione/scomparsa del bottone */
   transition: all 0.3s ease-out;
 
-  /* Stato visibile */
+  /* 
+    STATO VISIBILE (classe .show)
+    Aggiunta dalla logica TypeScript quando l'utente ha scrollato
+  */
   &.show {
     opacity: 1;
     transform: translateY(0);
     pointer-events: auto;
   }
 
+  /* 
+    Effetto hover sul bottone
+    filter: brightness(1.1) rende il bottone il 10% più luminoso
+  */
   &:hover {
-    filter: brightness(1.1); // Leggermente più luminoso
+    filter: brightness(1.1);
   }
 }

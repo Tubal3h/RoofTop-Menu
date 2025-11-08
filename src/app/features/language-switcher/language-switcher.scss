@@ -1,36 +1,270 @@
-/* Variabili prese dallo stile globale */
+/*
+  FOGLIO DI STILE PER LANGUAGE SWITCHER
+  Gestisce il layout dei link linguistici e gli stili attivi/hover
+  Design minimalista e elegante
+*/
+
+/*
+  :HOST ELEMENT
+  :host rappresenta il componente stesso (<app-language-switcher>)
+  Consente di definire variabili CSS locali al componente
+  
+  Queste variabili sovrascrivono le variabili globali da styles.scss
+  O creano variabili locali se non esistono globalmente
+  
+  Perché usare :host?
+  - Encapsulation: le variabili restano locali al componente
+  - Flessibilità: il componente può essere stilizzato indipendentemente
+  - In questo caso, richiamiamo le stesse variabili globali
+    per mantenere coerenza con il design generale
+*/
 :host {
+  /*
+    --color-text: #E0E0E0
+    Colore del testo dei link linguistici
+    Bianco non abbagliante (ereditato da variabile globale)
+    Usato quando il link non è attivo
+  */
   --color-text: #E0E0E0;
-  --color-primary: #D4AF37; 
+
+  /*
+    --color-primary: #D4AF37
+    Colore oro primario
+    Usato quando il link è attivo (lingua corrente)
+    Indica visualmente quale lingua è selezionata
+  */
+  --color-primary: #D4AF37;
+
+  /*
+    --color-border: #333
+    Colore del bordo (non usato in questo componente)
+    Definito per coerenza con il sistema di design globale
+  */
   --color-border: #333;
 }
 
+/*
+  CONTENITORE LANGUAGE SWITCHER
+  Flex container che organizza i link linguistici
+*/
 .lang-switcher {
+  /*
+    display: flex
+    Abilita flexbox per allineare i link orizzontalmente
+    Alternativa a float o inline-block (più moderno e pulito)
+  */
   display: flex;
+
+  /*
+    justify-content: center
+    Centra i link orizzontalmente
+    Opzioni: flex-start, center, flex-end, space-between, ecc.
+    'center' = mette i link al centro del contenitore
+  */
   justify-content: center;
+
+  /*
+    gap: 0.75rem
+    Spazio tra i link
+    0.75rem ≈ 12px (con font-size base 16px)
+    Crea spazio consistente senza usare margin
+    Più pulito di aggiungere margin a ogni link
+    
+    Alternativa: margin: 0 0.375rem su ogni link
+    Con gap è più semplice e leggibile
+  */
   gap: 0.75rem;
+
+  /*
+    margin-bottom: 2rem
+    Spazio sotto il language switcher
+    2rem ≈ 32px
+    Separa il switcher dal contenuto menu sotto
+    (il .welcome-section inizia dopo)
+  */
   margin-bottom: 2rem;
 }
 
+/*
+  STILE DEI LINK LINGUISTICI
+  Applicato a ogni <a> dentro .lang-switcher
+*/
 .lang-switcher a {
+  /*
+    font-family: 'Montserrat', sans-serif
+    Font primario dell'app per coerenza
+    Montserrat è il font per body text (non è Playfair Display)
+    Perché? I link sono elementi UI, non titoli
+  */
   font-family: 'Montserrat', sans-serif;
+
+  /*
+    font-weight: 400
+    Peso normale (né light né bold)
+    Per i link inattivi, il testo è leggibile ma non enfatizzato
+    Quando diventa active, il weight passa a 700 (bold)
+  */
   font-weight: 400;
+
+  /*
+    font-size: 0.9rem
+    0.9rem ≈ 14.4px (con 16px base)
+    Testo piccolo per il language switcher
+    Non deve dominare la pagina
+    Deve attirare poca attenzione quando non serve
+  */
   font-size: 0.9rem;
+
+  /*
+    color: var(--color-text)
+    Colore predefinito del testo: bianco non abbagliante #E0E0E0
+    Questo è il colore quando il link non è attivo
+  */
   color: var(--color-text);
+
+  /*
+    opacity: 0.6
+    Trasparenza al 60% (non completamente opaco)
+    Rende il testo meno prominente quando non è attivo
+    Suggerisce visivamente che il link è "inattivo"
+    opacity: 0 = invisibile, 0.5 = 50% trasparente, 1 = opaco
+    0.6 = 60% opaco, 40% trasparente
+  */
   opacity: 0.6;
+
+  /*
+    text-decoration: none
+    Rimuove la sottolineatura predefinita dei link
+    I link HTML hanno sottolineatura di default
+    La rimuoviamo per un aspetto più pulito e moderno
+  */
   text-decoration: none;
+
+  /*
+    cursor: pointer
+    Cambia il cursore a "mano" al passaggio del mouse
+    Indica all'utente che l'elemento è cliccabile
+    Standard UX: gli elementi cliccabili devono avere cursor: pointer
+  */
   cursor: pointer;
+
+  /*
+    padding: 0 0.5rem
+    padding: 0 verticale, 0.5rem orizzontale
+    0.5rem ≈ 8px ai lati
+    Crea uno spazio "invisibile" attorno al testo
+    Aumenta l'area di click senza aumentare la larghezza visibile
+    Migliora l'usabilità (più facile cliccare su small screens)
+  */
   padding: 0 0.5rem;
+
+  /*
+    transition: all 0.3s ease
+    Anima tutti i cambiamenti di proprietà
+    Durata: 0.3 secondi
+    Easing: ease (velocità naturale)
+    
+    Proprietà animate:
+    - color: transizione dal bianco al giallo al hover
+    - opacity: transizione da 0.6 a 1
+    - font-weight: non animata (no transition support)
+    
+    Effetto: quando l'utente passa il mouse, i cambiamenti non sono istantanei
+    ma graduali e piacevoli (transizione smooth)
+  */
   transition: all 0.3s ease;
-
-  &.active {
-    font-weight: 700;
-    color: var(--color-primary);
-    opacity: 1;
-  }
-
-  &:hover:not(.active) {
-    opacity: 1;
-    color: var(--color-text);
-  }
 }
+
+/*
+  STATO ACTIVE
+  Applicato quando il link corrisponde alla lingua attuale
+  [class.active]="translate.currentLang === lang"
+  
+  Pseudo-classe: &.active significa ".lang-switcher a.active"
+  Grazie a SCSS, possiamo usare & per riferirsi al selettore padre
+*/
+.lang-switcher a.active {
+  /*
+    font-weight: 700
+    Bold - testo più grassetto
+    Indica visivamente che questa è la lingua attiva
+    Contrasto con 400 dei link inattivi
+  */
+  font-weight: 700;
+
+  /*
+    color: var(--color-primary)
+    Colore oro (#D4AF37)
+    Il colore primario dell'app
+    Rende il link attivo visivamente distinguibile
+    Oro vs bianco = chiaro contrasto
+  */
+  color: var(--color-primary);
+
+  /*
+    opacity: 1
+    Completamente opaco (non trasparente)
+    Contrasta con opacity: 0.6 dei link inattivi
+    Il link attivo è più "solido" e prominente
+    Doppio segnale: colore + opacità = linguaggio attivo
+  */
+  opacity: 1;
+}
+
+/*
+  EFFETTO HOVER SU LINK INATTIVI
+  Pseudo-classe: &:hover:not(.active)
+  
+  :hover = quando il mouse passa sopra il link
+  :not(.active) = ma solo se il link NON ha la classe active
+  
+  Logica: vogliamo feedback visivo al hover, TRANNE se è già active
+  Se il link è già active, non mostra effetto hover (è già in primo piano)
+*/
+.lang-switcher a:hover:not(.active) {
+  /*
+    opacity: 1
+    Quando l'utente passa il mouse su un link inattivo,
+    aumenta l'opacità da 0.6 a 1 (lo rende più visibile)
+    Feedback visivo: "questo link è interattivo"
+  */
+  opacity: 1;
+
+  /*
+    color: var(--color-text)
+    Il colore rimane bianco (non cambia a oro)
+    Ma l'opacità aumentata lo rende più luminoso
+    Perché? Mantiene semplicità: solo il link active è oro
+    Gli altri link au hover diventano solo "più luminosi"
+  */
+  color: var(--color-text);
+}
+
+/*
+  GERARCHIA VISIVA COMPLETA:
+  
+  STATO 1: INATTIVO (non active, non hover)
+  - color: bianco #E0E0E0
+  - opacity: 0.6 (scuro, sfumato)
+  - font-weight: 400 (normale)
+  - Aspetto: testo sfumato, poco prominente
+  - Messaggio: "selezionabile ma non attualmente in uso"
+  
+  STATO 2: HOVER INATTIVO (non active, ma hover)
+  - color: bianco #E0E0E0 (no change)
+  - opacity: 1 (luminoso)
+  - font-weight: 400 (normale)
+  - Aspetto: testo luminoso, invita al click
+  - Messaggio: "questa è selezionabile, passa il mouse"
+  
+  STATO 3: ACTIVE (lingua attualmente selezionata)
+  - color: oro #D4AF37 (cambiato)
+  - opacity: 1 (luminoso)
+  - font-weight: 700 (bold)
+  - Aspetto: testo oro bold, molto prominente
+  - Messaggio: "questa è la lingua attualmente attiva"
+  
+  TRANSIZIONI:
+  Tutti i cambiamenti hanno transition: all 0.3s ease
+  Quindi il passaggio da uno stato all'altro è smooth, non istantaneo
+*/
