@@ -1,4 +1,4 @@
-Menu - Spritzeria Barberini
+Menu - Per Hotel
 An Angular web application for displaying a digital restaurant menu with multilingual support, real-time updates, and elegant design.
 
 Project Description

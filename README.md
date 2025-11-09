@@ -1,6 +1,6 @@
-# Menu - Spritzeria Barberini
+# Menu - Per Hotel
 
-Applicazione Angular per la visualizzazione del menu digitale del ristorante Spritzeria Barberini con supporto multilingua, aggiornamenti in tempo reale e design elegante.
+Applicazione Angular per la visualizzazione del menu digitale del ristorante Per Hotel con supporto multilingua, aggiornamenti in tempo reale e design elegante.
 
 ## Descrizione del Progetto
 
